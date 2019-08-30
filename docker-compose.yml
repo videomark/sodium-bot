@@ -1,0 +1,8 @@
+version: "3"
+services:
+  chromium:
+    build: chromium
+    environment:
+      PORT: "8008"
+    ports:
+      - "8008:8008"

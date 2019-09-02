@@ -8,7 +8,22 @@ Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
   assert(value != null, `${env} required.`);
 });
 
-const play = async () => {
+/**
+ * @param {URL} url
+ * @param {Number} timeout timeout period (seconds)
+ */
+const play = async (url, timeout) => {
+  const client = new HttpClient(SELENIUM_REMOTE_URL);
+  const executor = new Executor(client);
+  const driver = new Driver(require("./session.json"), executor);
+
+  driver.get(url);
+
+  await driver.sleep(timeout * 1e3);
+  await driver.get("about:blank");
+};
+
+const start = () => {
   const args = arg({
     "-h": "--help",
     "--help": Boolean,
@@ -33,16 +48,7 @@ const play = async () => {
     return;
   }
 
-  const url = new URL(args._[0]);
-
-  const client = new HttpClient(SELENIUM_REMOTE_URL);
-  const executor = new Executor(client);
-  const driver = new Driver(require("./session.json"), executor);
-
-  driver.get(url);
-
-  await driver.sleep(timeout * 1e3);
-  await driver.get("about:blank");
+  play(new URL(args._[0]), timeout);
 };
 
-if (require.main === module) play();
+if (require.main === module) start();

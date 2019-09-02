@@ -5,10 +5,10 @@
 ## つかいかた
 
 ```sh
-chromedriver --port=8008
+chromedriver --port=8008 &
 export SELENIUM_REMOTE_URL=http://localhost:8008
 VIDEOMARK_EXTENSION_PATH=/path/to/videomark-extension/ SESSION_ID=sodium node setup.js
-# ...
+node -t 60 start.js https://www.youtube.com/watch?v=mY6sChi65oU
 node down.js
 ```
 
@@ -18,7 +18,7 @@ node down.js
 dokcer-compose up -d
 export SELENIUM_REMOTE_URL=http://localhost:8008
 VIDEOMARK_EXTENSION_PATH=videomark-extension SESSION_ID=sodium node setup.js
-# ...
+node -t 60 start.js https://www.youtube.com/watch?v=mY6sChi65oU
 node down.js
 ```
 

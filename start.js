@@ -2,6 +2,9 @@ const arg = require("arg");
 const assert = require("assert");
 const { HttpClient, Executor } = require("selenium-webdriver/http");
 const { Driver } = require("selenium-webdriver/chrome");
+const isYouTubePage = require("./utils/isYouTubePage");
+const isParaviPage = require("./utils/isParaviPage");
+const isTverPage = require("./utils/isTVerPage");
 
 const { SELENIUM_REMOTE_URL } = process.env;
 Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
@@ -16,6 +19,11 @@ const play = async (url, timeout) => {
   const client = new HttpClient(SELENIUM_REMOTE_URL);
   const executor = new Executor(client);
   const driver = new Driver(require("./session.json"), executor);
+
+  assert(
+    isYouTubePage(url) || isParaviPage(url) || isTverPage(url),
+    "Not supported URL."
+  );
 
   driver.get(url);
 

@@ -114,4 +114,4 @@ const setup = async () => {
   }
 };
 
-setup();
+if (require.main === module) setup();

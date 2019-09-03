@@ -4,7 +4,7 @@ const { HttpClient, Executor } = require("selenium-webdriver/http");
 const { Driver } = require("selenium-webdriver/chrome");
 const isYouTubePage = require("./utils/isYouTubePage");
 const isParaviPage = require("./utils/isParaviPage");
-const isTverPage = require("./utils/isTVerPage");
+const isTVerPage = require("./utils/isTVerPage");
 
 const { SELENIUM_REMOTE_URL } = process.env;
 Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
@@ -21,7 +21,7 @@ const play = async (url, timeout) => {
   const driver = new Driver(require("./session.json"), executor);
 
   assert(
-    isYouTubePage(url) || isParaviPage(url) || isTverPage(url),
+    isYouTubePage(url) || isParaviPage(url) || isTVerPage(url),
     "Not supported URL."
   );
 

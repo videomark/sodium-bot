@@ -1,10 +1,10 @@
 const arg = require("arg");
 const assert = require("assert");
+const { Session } = require("selenium-webdriver");
+const Symbols = require("selenium-webdriver/lib/symbols");
 const { HttpClient, Executor } = require("selenium-webdriver/http");
-const { Driver } = require("selenium-webdriver/chrome");
-const isYouTubePage = require("./utils/isYouTubePage");
-const isParaviPage = require("./utils/isParaviPage");
-const isTVerPage = require("./utils/isTVerPage");
+const { Driver, Options } = require("selenium-webdriver/chrome");
+const { Page } = require("./");
 
 const { SELENIUM_REMOTE_URL } = process.env;
 Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
@@ -18,17 +18,21 @@ Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
 const play = async (url, timeout) => {
   const client = new HttpClient(SELENIUM_REMOTE_URL);
   const executor = new Executor(client);
-  const driver = new Driver(require("./session.json"), executor);
 
-  assert(
-    isYouTubePage(url) || isParaviPage(url) || isTVerPage(url),
-    "Not supported URL."
+  executor.w3c = true;
+  executor.defineCommand(
+    "sendDevToolsCommand",
+    "POST",
+    "/session/:sessionId/chromium/send_command"
   );
 
-  driver.get(url);
+  const driver = new Driver(require("./session.json"), executor);
+  const page = new Page({ driver, url });
+
+  page.play();
 
   await driver.sleep(timeout * 1e3);
-  await driver.get("about:blank");
+  await page.stop();
 };
 
 const start = () => {

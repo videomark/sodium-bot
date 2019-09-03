@@ -11,6 +11,7 @@ Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
 const down = async () => {
   const client = new HttpClient(SELENIUM_REMOTE_URL);
   const executor = new Executor(client);
+  executor.w3c = true;
 
   new Driver(require("./session.json"), executor).quit();
   await unlink("./session.json");

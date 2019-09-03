@@ -36,10 +36,17 @@ const build = async () => {
   const driver = new Builder()
     .forBrowser("chrome")
     .setChromeOptions(
-      new Options().addArguments(
-        "--no-sandbox",
-        `--load-extension=${VIDEOMARK_EXTENSION_PATH}`
-      )
+      new Options()
+        .addArguments(
+          "--no-sandbox",
+          `--load-extension=${VIDEOMARK_EXTENSION_PATH}`
+        )
+        .excludeSwitches(
+          // NOTE: for Paravi.
+          "--disable-background-networking",
+          // NOTE: for Paravi.
+          "--disable-default-apps"
+        )
     )
     .build();
 

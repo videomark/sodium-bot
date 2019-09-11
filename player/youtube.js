@@ -1,11 +1,24 @@
-const { WebDriver } = require("selenium-webdriver");
+const { By } = require("selenium-webdriver");
+const Player = require("./player");
 
-class YouTubePlayer {
+class YouTubePlayer extends Player {
   /**
-   * @param {{driver: WebDriver, url: URL}} options
+   * @override
+   * @param {Number} ms timeout
    */
-  async play({ driver, url }) {
-    return await driver.get(url);
+  async waitForPlaying(ms) {
+    const { driver } = this;
+
+    await Promise.all([
+      driver
+        .findElement(By.css("button.ytp-ad-survey-interstitial-action-button"))
+        .then(el => el.click())
+        .catch(() => {})
+        .then(() => driver.findElement(By.css("button.ytp-ad-skip-button")))
+        .then(el => el.click())
+        .catch(() => {}),
+      super.waitForPlaying(ms)
+    ]);
   }
 }
 

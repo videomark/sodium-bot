@@ -1,4 +1,5 @@
-const { WebDriver } = require("selenium-webdriver");
+const { WebDriver, By } = require("selenium-webdriver");
+const Player = require("./player");
 
 /**
  * @param {WebDriver} driver
@@ -29,17 +30,32 @@ const replaceUserAgent = async driver => {
   };
 };
 
-class TVerPlayer {
+class TVerPlayer extends Player {
   /**
+   * @override
    * @param {{driver: WebDriver, url: URL}} options
    */
   async play({ driver, url }) {
-    const onStop = await replaceUserAgent(driver);
+    this.onStop = await replaceUserAgent(driver);
 
-    await driver.get(url);
+    await super.play({ driver, url });
     await driver.executeScript("closeEnquete()");
+  }
 
-    await onStop();
+  /**
+   * @override
+   * @param {Number} ms timeout
+   */
+  async waitForPlaying(ms) {
+    const { driver } = this;
+
+    await Promise.all([
+      driver
+        .findElement(By.xpath(`//a[text()="最初から再生する"]`))
+        .then(el => el.click())
+        .catch(() => {}),
+      super.waitForPlaying(ms)
+    ]);
   }
 }
 

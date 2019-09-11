@@ -1,10 +1,9 @@
 const arg = require("arg");
 const assert = require("assert");
-const { Session } = require("selenium-webdriver");
-const Symbols = require("selenium-webdriver/lib/symbols");
-const { HttpClient, Executor } = require("selenium-webdriver/http");
-const { Driver, Options } = require("selenium-webdriver/chrome");
+const { Driver } = require("selenium-webdriver/chrome");
 const { Page } = require("./");
+const Executor = require("./utils/executor");
+const { TimeoutError } = require("./utils/timeout");
 
 const { SELENIUM_REMOTE_URL } = process.env;
 Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
@@ -12,26 +11,57 @@ Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
 });
 
 /**
- * @param {URL} url
- * @param {Number} timeout timeout period (seconds)
+ * @param {Number} count
+ * @param {Function} proc
  */
-const play = async (url, timeout) => {
-  const client = new HttpClient(SELENIUM_REMOTE_URL);
-  const executor = new Executor(client);
+const retry = async (count, proc) => {
+  for (const i of Array(count).keys()) {
+    try {
+      return await proc();
+    } catch (error) {
+      console.error(error);
+      if (i + 1 === count) break;
+    }
+  }
+  throw new Error(`${count} retries.`);
+};
 
-  executor.w3c = true;
-  executor.defineCommand(
-    "sendDevToolsCommand",
-    "POST",
-    "/session/:sessionId/chromium/send_command"
-  );
-
+/**
+ * @param {URL} url
+ * @param {Number} seconds timeout
+ */
+const play = async (url, seconds) => {
+  const executor = new Executor(SELENIUM_REMOTE_URL);
   const driver = new Driver(require("./session.json"), executor);
   const page = new Page({ driver, url });
+  const timeoutIn = seconds * 1e3;
+  const timeoutAt = Date.now() + timeoutIn;
+  const timeout = setTimeout(async () => {
+    await page.stop();
+    throw new TimeoutError(`${seconds} seconds timeout.`);
+  }, timeoutIn);
 
-  page.play();
+  try {
+    await retry(3, async () => {
+      console.log("Play...");
+      await page.play();
+      await page.waitForSodiumExists(1e3);
+      console.log("Sodium exists.");
+      await page.waitForPlaying(10e3);
+      console.log("Playing.");
+      await page.waitForShowStatus(90e3);
+      console.log("Show status.");
+      await page.waitForShowQuality(30e3);
+      console.log("Show quality.");
+    });
+  } catch (error) {
+    await page.stop();
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 
-  await driver.sleep(timeout * 1e3);
+  await driver.sleep(Math.max(0, timeoutAt - Date.now()));
   await page.stop();
 };
 
@@ -59,6 +89,11 @@ const start = () => {
     );
     return;
   }
+
+  // NOTE: Unhandled promise rejection terminates Node.js process with non-zero exit code.
+  process.on("unhandledRejection", event => {
+    throw event;
+  });
 
   play(new URL(args._[0]), timeout);
 };

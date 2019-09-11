@@ -1,4 +1,4 @@
-const { WebDriver } = require("selenium-webdriver");
+const { WebDriver, until, By } = require("selenium-webdriver");
 const { YouTubePlayer } = require("./player/youtube");
 const { ParaviPlayer } = require("./player/paravi");
 const { TVerPlayer } = require("./player/tver");
@@ -32,11 +32,51 @@ class Page {
 
   async play() {
     const { driver, url } = this;
-    return await this.player.play({ driver, url });
+    await this.player.play({ driver, url });
   }
 
   async stop() {
-    return await this.driver.get("about:blank");
+    await this.player.stop("about:blank");
+  }
+
+  /**
+   * @param {Number} ms timeout
+   */
+  async waitForSodiumExists(ms) {
+    const { driver } = this;
+
+    await driver.wait(
+      until.elementsLocated(By.css(`script[src^="chrome"][src$="/sodium.js"]`)),
+      ms,
+      "Sodium.js not found."
+    );
+  }
+
+  /**
+   * @param {Number} ms timeout
+   */
+  async waitForPlaying(ms) {
+    const { player } = this;
+
+    await player.waitForPlaying(ms);
+  }
+
+  /**
+   * @param {Number} ms timeout
+   */
+  async waitForShowStatus(ms) {
+    const { player } = this;
+
+    await player.waitForShowStatus(ms);
+  }
+
+  /**
+   * @param {Number} ms timeout
+   */
+  async waitForShowQuality(ms) {
+    const { player } = this;
+
+    await player.waitForShowQuality(ms);
   }
 }
 

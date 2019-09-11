@@ -1,7 +1,7 @@
 const { unlink } = require("fs").promises;
 const assert = require("assert");
-const { HttpClient, Executor } = require("selenium-webdriver/http");
 const { Driver } = require("selenium-webdriver/chrome");
+const Executor = require("./utils/executor")
 
 const { SELENIUM_REMOTE_URL } = process.env;
 Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
@@ -9,10 +9,7 @@ Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
 });
 
 const down = async () => {
-  const client = new HttpClient(SELENIUM_REMOTE_URL);
-  const executor = new Executor(client);
-  executor.w3c = true;
-
+  const executor = new Executor(SELENIUM_REMOTE_URL)
   new Driver(require("./session.json"), executor).quit();
   await unlink("./session.json");
   console.log("Quit session.");

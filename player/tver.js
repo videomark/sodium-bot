@@ -39,7 +39,7 @@ class TVerPlayer extends Player {
     this.onStop = await replaceUserAgent(driver);
 
     await super.play({ driver, url });
-    await driver.executeScript("closeEnquete()");
+    await driver.executeScript("return closeEnquete()");
   }
 
   /**

@@ -44,15 +44,21 @@ const play = async (url, seconds) => {
   try {
     await retry(3, async () => {
       console.log("Play...");
+      await page.screenshot();
       await page.play();
+      await page.screenshot();
       await page.waitForSodiumExists(1e3);
       console.log("Sodium exists.");
+      await page.screenshot();
       await page.waitForPlaying(10e3);
       console.log("Playing.");
+      await page.screenshot();
       await page.waitForShowStatus(90e3);
       console.log("Show status.");
+      await page.screenshot();
       await page.waitForShowQuality(30e3);
       console.log("Show quality.");
+      await page.screenshot();
     });
   } catch (error) {
     await page.stop();
@@ -61,7 +67,13 @@ const play = async (url, seconds) => {
     clearTimeout(timeout);
   }
 
-  await driver.sleep(Math.max(0, timeoutAt - Date.now()));
+  await Promise.race([
+    page.logger(message => {
+      console.log(message);
+      page.screenshot();
+    }),
+    driver.sleep(Math.max(0, timeoutAt - Date.now()))
+  ]);
   await page.stop();
 };
 

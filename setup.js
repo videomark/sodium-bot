@@ -22,6 +22,23 @@ const click = driver => cssselector =>
 /**
  * @param {WebDriver} driver
  */
+const closeOthers = async driver => {
+  const current = await driver.getWindowHandle();
+  const others = (await driver.getAllWindowHandles()).filter(
+    other => other !== current
+  );
+
+  for (const other of others) {
+    await driver.switchTo().window(other);
+    await driver.close();
+  }
+
+  await driver.switchTo().window(current);
+};
+
+/**
+ * @param {WebDriver} driver
+ */
 const waitForContentRendering = async driver => {
   await driver.wait(driver =>
     driver.executeScript(`return document.readyState === "complete"`)
@@ -80,6 +97,7 @@ const setup = async () => {
     assert(terms != null, "Terms page is not found.");
 
     await driver.switchTo().window(terms.windowName);
+    await closeOthers(driver);
     await waitForContentRendering(driver);
 
     ["#terms", "#privacy", "#submit"].forEach(click(driver));

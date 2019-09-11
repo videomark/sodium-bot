@@ -19,11 +19,3 @@ docker-compose up --build -d
 docker-compose run --rm bot start -- -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
 docker-compose down
 ```
-
-## TODO
-
-- [x] セッション ID の設定、ブラウザの起動
-- [x] 自動計測スクリプトの実装
-  - 任意の期間 (数分〜数時間)・対象の動画配信サービスの任意の URL の動画またはプレイリストを閲覧して再生し続けることができる
-- [ ] ロギング・スクリーンショット取得
-- [x] 計測スクリプトを Docker コンテナ化

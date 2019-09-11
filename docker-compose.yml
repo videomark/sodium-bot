@@ -6,3 +6,13 @@ services:
       PORT: "8008"
     ports:
       - "8008:8008"
+  bot:
+    build: "."
+    depends_on:
+      - chromium
+    environment:
+      SELENIUM_REMOTE_URL: http://chromium:8008
+      VIDEOMARK_EXTENSION_PATH: videomark-extension
+      SESSION_ID: sodium
+    volumes:
+      - ".:/app"

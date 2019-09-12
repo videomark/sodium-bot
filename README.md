@@ -16,6 +16,6 @@ node down.js
 
 ```sh
 docker-compose up --build -d
-docker-compose run --rm bot start -- -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
+docker-compose run --rm bot start -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
 docker-compose down
 ```

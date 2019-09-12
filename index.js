@@ -1,4 +1,5 @@
 const { WebDriver, until, By } = require("selenium-webdriver");
+const Fluture = require("fluture");
 const { YouTubePlayer } = require("./player/youtube");
 const { ParaviPlayer } = require("./player/paravi");
 const { TVerPlayer } = require("./player/tver");
@@ -39,8 +40,6 @@ class Page {
 
   async stop() {
     await this.player.stop("about:blank");
-
-    this.driver = undefined;
   }
 
   /**
@@ -85,45 +84,63 @@ class Page {
 
   /**
    * @param {Function} logger
+   * @returns {Fluture}
    */
-  async logger(logger) {
+  logger(logger) {
+    let cancel = false;
+    const isCancel = () => cancel;
+    const onCancel = () => (cancel = true);
+
     let length = {
       videos: 0,
       playing: 0,
       ended: 0
     };
 
-    while (this.driver != null) {
-      const { driver } = this;
-      const elements = await driver.findElements(By.css("video"));
-      const videos = await Promise.all(
-        elements.map(element =>
-          Promise.all([
-            element.getAttribute("paused"),
-            element.getAttribute("ended")
-          ])
-        )
-      );
-      const playing = videos.filter(([paused]) => !paused).length;
-      const ended = videos.filter(([, ended]) => ended).length;
+    const waitP = async () => {
+      while (!isCancel()) {
+        const { driver } = this;
+        const elements = await driver.findElements(By.css("video"));
 
-      if (
-        length.videos !== videos.length ||
-        length.playing !== playing ||
-        length.ended !== ended
-      ) {
-        logger(`${videos.length} videos ${playing} playing ${ended} ended`);
+        if (isCancel()) break;
+
+        const videos = await Promise.all(
+          elements.map(element =>
+            Promise.all([
+              element.getAttribute("paused"),
+              element.getAttribute("ended")
+            ])
+          )
+        );
+
+        if (isCancel()) break;
+
+        const playing = videos.filter(([paused]) => !paused).length;
+        const ended = videos.filter(([, ended]) => ended).length;
+
+        if (
+          length.videos !== videos.length ||
+          length.playing !== playing ||
+          length.ended !== ended
+        ) {
+          logger(`${videos.length} videos ${playing} playing ${ended} ended`);
+        }
+
+        length = {
+          videos: videos.length,
+          playing,
+          ended
+        };
+
+        // NOTE: Interval time.
+        await driver.sleep(200);
       }
+    };
 
-      length = {
-        videos: videos.length,
-        playing,
-        ended
-      };
-
-      // NOTE: Interval time.
-      await driver.sleep(200);
-    }
+    return Fluture((_, res) => {
+      waitP().then(res);
+      return onCancel;
+    });
   }
 
   /**

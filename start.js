@@ -1,9 +1,11 @@
 const arg = require("arg");
 const assert = require("assert");
+const { TimeoutError } = require("selenium-webdriver");
 const { Driver } = require("selenium-webdriver/chrome");
+const Fluture = require("fluture");
+const { promise, race, after } = Fluture;
 const { Page } = require("./");
 const Executor = require("./utils/executor");
-const { TimeoutError } = require("./utils/timeout");
 
 const { SELENIUM_REMOTE_URL } = process.env;
 Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
@@ -67,13 +69,16 @@ const play = async (url, seconds) => {
     clearTimeout(timeout);
   }
 
-  await Promise.race([
-    page.logger(message => {
-      console.log(message);
-      page.screenshot();
-    }),
-    driver.sleep(Math.max(0, timeoutAt - Date.now()))
-  ]);
+  await promise(
+    race(
+      after(Math.max(0, timeoutAt - Date.now()), ""),
+      page.logger(message => {
+        console.log(message);
+        page.screenshot();
+      })
+    )
+  );
+
   await page.stop();
 };
 

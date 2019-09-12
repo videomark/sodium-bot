@@ -40,22 +40,10 @@ class TVerPlayer extends Player {
 
     await super.play({ driver, url });
     await driver.executeScript("return closeEnquete()");
-  }
-
-  /**
-   * @override
-   * @param {Number} ms timeout
-   */
-  async waitForPlaying(ms) {
-    const { driver } = this;
-
-    await Promise.all([
-      driver
-        .findElement(By.xpath(`//a[text()="最初から再生する"]`))
-        .then(el => el.click())
-        .catch(() => {}),
-      super.waitForPlaying(ms)
-    ]);
+    await driver
+      .findElement(By.xpath(`//a[text()="最初から再生する"]`))
+      .then(el => el.click())
+      .catch(() => {});
   }
 }
 

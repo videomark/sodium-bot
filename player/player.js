@@ -1,5 +1,6 @@
 const { WebDriver, until, By } = require("selenium-webdriver");
-const { timeout } = require("../utils/timeout");
+const Fluture = require("fluture");
+const { promise, race, rejectAfter } = Fluture;
 
 class Player {
   async onStop() {}
@@ -28,21 +29,34 @@ class Player {
    */
   async waitForPlaying(ms) {
     const { driver } = this;
-    const wait = async () => {
-      for (;;) {
+
+    let cancel = false;
+    const isCancel = () => cancel;
+    const onCancel = () => (cancel = true);
+
+    const waitP = async () => {
+      while (!isCancel()) {
         const elements = await driver.findElements(By.css("video"));
+
+        if (isCancel()) break;
+
         const playing = (await Promise.all(
           elements.map(element => element.getAttribute("paused"))
         )).some(paused => !paused);
 
-        if (playing) break;
+        if (isCancel() || playing) break;
 
         // NOTE: Interval time (ms).
         await driver.sleep(200);
       }
     };
 
-    await Promise.race([timeout(ms, "Not playing."), wait()]);
+    const wait = Fluture((_, res) => {
+      waitP().then(res);
+      return onCancel;
+    });
+    const source = race(rejectAfter(ms, "Not playing."), wait);
+    await promise(source);
   }
 
   /**
@@ -63,22 +77,33 @@ class Player {
    */
   async waitForShowQuality(ms) {
     const { driver } = this;
-    const wait = async () => {
-      for (;;) {
+
+    let cancel = false;
+    const isCancel = () => cancel;
+    const onCancel = () => (cancel = true);
+
+    const waitP = async () => {
+      while (!isCancel()) {
         const text = await driver.executeScript(
           [
             `const root = document.querySelector("#__videomark_ui").shadowRoot`,
             `return root.querySelector("summary").innerText`
           ].join(";")
         );
-        if (/\s[1-5](\.\d*)?\s/.test(text)) break;
+
+        if (isCancel() || /\s[1-5](\.\d*)?\s/.test(text)) break;
 
         // NOTE: Interval time (ms).
         await driver.sleep(200);
       }
     };
 
-    await Promise.race([timeout(ms, "Quality not found."), wait()]);
+    const wait = Fluture((_, res) => {
+      waitP().then(res);
+      return onCancel;
+    });
+    const source = race(rejectAfter(ms, "Quality not found."), wait);
+    await promise(source);
   }
 }
 

@@ -4,21 +4,18 @@ const Player = require("./player");
 class YouTubePlayer extends Player {
   /**
    * @override
-   * @param {Number} ms timeout
+   * @param {{driver: WebDriver, url: URL}} options
    */
-  async waitForPlaying(ms) {
-    const { driver } = this;
-
-    await Promise.all([
-      driver
-        .findElement(By.css("button.ytp-ad-survey-interstitial-action-button"))
-        .then(el => el.click())
-        .catch(() => {})
-        .then(() => driver.findElement(By.css("button.ytp-ad-skip-button")))
-        .then(el => el.click())
-        .catch(() => {}),
-      super.waitForPlaying(ms)
-    ]);
+  async play({ driver, url }) {
+    await super.play({ driver, url });
+    await driver
+      .findElement(By.css("button.ytp-ad-survey-interstitial-action-button"))
+      .then(el => el.click())
+      .catch(() => {});
+    await driver
+      .findElement(By.css("button.ytp-ad-skip-button"))
+      .then(el => el.click())
+      .catch(() => {});
   }
 }
 

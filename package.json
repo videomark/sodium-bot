@@ -7,7 +7,7 @@
   "dependencies": {
     "arg": "^4.1.1",
     "fluture": "^11.0.3",
-    "selenium-webdriver": "^4.0.0-alpha.4"
+    "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "scripts": {
     "setup": "node setup.js",

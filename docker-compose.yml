@@ -1,7 +1,10 @@
 version: "3"
 services:
   chromium:
-    build: chromium
+    build:
+      context: chromium
+      # args:
+      #   extension_url: https://sodium-extension.netlify.com/
     environment:
       PORT: "8008"
     ports:

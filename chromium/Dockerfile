@@ -9,9 +9,10 @@ RUN \
     curl \
     unzip \
   && rm -r /var/lib/apt/lists
+ARG extension_url=https://sodium-extension.netlify.com/
 RUN \
   curl \
-    -sL https://sodium-extension.netlify.com/ \
+    -sL "${extension_url}" \
     -o dist.zip \
   && mkdir videomark-extension \
   && unzip dist.zip -d videomark-extension \

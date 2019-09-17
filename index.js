@@ -104,14 +104,15 @@ class Page {
 
         if (isCancel()) break;
 
-        const videos = await Promise.all(
+        const all = Promise.all.bind(Promise);
+        const videos = (await all(
           elements.map(element =>
-            Promise.all([
-              element.getAttribute("paused"),
-              element.getAttribute("ended")
+            all([
+              element.getAttribute("paused").catch(() => null),
+              element.getAttribute("ended").catch(() => null)
             ])
           )
-        );
+        )).filter(attributes => attributes.every(attr => attr != null));
 
         if (isCancel()) break;
 

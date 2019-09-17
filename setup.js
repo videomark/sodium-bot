@@ -57,7 +57,9 @@ const build = async () => {
         .addArguments(
           "--no-sandbox",
           "--disable-dev-shm-usage",
-          `--load-extension=${VIDEOMARK_EXTENSION_PATH}`
+          `--load-extension=${VIDEOMARK_EXTENSION_PATH}`,
+          // NOTE: for Paravi.
+          "--autoplay-policy=no-user-gesture-required"
         )
         .excludeSwitches(
           // NOTE: for Paravi.

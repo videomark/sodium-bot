@@ -56,6 +56,7 @@ const build = async () => {
       new Options()
         .addArguments(
           "--no-sandbox",
+          "--disable-dev-shm-usage",
           `--load-extension=${VIDEOMARK_EXTENSION_PATH}`
         )
         .excludeSwitches(

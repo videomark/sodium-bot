@@ -92,9 +92,9 @@ class Page {
     const onCancel = () => (cancel = true);
 
     let length = {
-      videos: 0,
-      playing: 0,
-      ended: 0
+      videos: NaN,
+      playing: NaN,
+      ended: NaN
     };
 
     const waitP = async () => {

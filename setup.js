@@ -5,6 +5,7 @@ const { Options } = require("selenium-webdriver/chrome");
 const isTermsPage = require("./utils/isTermsPage");
 const isWelcomePage = require("./utils/isWelcomePage");
 const isSettingsPage = require("./utils/isSettingsPage");
+const logger = require("./utils/logger");
 
 const { VIDEOMARK_EXTENSION_PATH, SESSION_ID } = process.env;
 Object.entries({ VIDEOMARK_EXTENSION_PATH, SESSION_ID }).forEach(
@@ -74,7 +75,7 @@ const build = async () => {
     "session.json",
     JSON.stringify((await driver.getSession()).getId())
   );
-  console.log("Save WebDriver session file.");
+  logger.info("Save WebDriver session file.");
 
   // NOTE: wait for terms page to open.
   await driver.sleep(500);
@@ -131,11 +132,11 @@ const setup = async () => {
 
     assert(sessionId === SESSION_ID, "Failed to set Session ID.");
 
-    console.log(`Session ID: ${SESSION_ID}`);
-    console.log("Setup complete.");
+    logger.info(`Session ID: ${SESSION_ID}`);
+    logger.info("Setup complete.");
   } catch (error) {
     if (driver != null) {
-      console.error(`Current URL: ${await driver.getCurrentUrl()}`);
+      logger.error(`Current URL: ${await driver.getCurrentUrl()}`);
       driver.quit();
     }
     throw error;

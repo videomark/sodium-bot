@@ -6,6 +6,7 @@ const Fluture = require("fluture");
 const { promise, race, after } = Fluture;
 const { Page } = require("./");
 const Executor = require("./utils/executor");
+const logger = require("./utils/logger");
 
 const { SELENIUM_REMOTE_URL } = process.env;
 Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
@@ -21,7 +22,7 @@ const retry = async (count, proc) => {
     try {
       return await proc();
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       if (i + 1 === count) break;
     }
   }
@@ -45,21 +46,21 @@ const play = async (url, seconds) => {
 
   try {
     await retry(3, async () => {
-      console.log("Play...");
+      logger.info("Play...");
       await page.screenshot();
       await page.play();
       await page.screenshot();
       await page.waitForSodiumExists(1e3);
-      console.log("Sodium exists.");
+      logger.info("Sodium exists.");
       await page.screenshot();
       await page.waitForPlaying(10e3);
-      console.log("Playing.");
+      logger.info("Playing.");
       await page.screenshot();
       await page.waitForShowStatus(90e3);
-      console.log("Show status.");
+      logger.info("Show status.");
       await page.screenshot();
       await page.waitForShowQuality(30e3);
-      console.log("Show quality.");
+      logger.info("Show quality.");
       await page.screenshot();
     });
   } catch (error) {
@@ -73,7 +74,7 @@ const play = async (url, seconds) => {
     race(
       after(Math.max(0, timeoutAt - Date.now()), ""),
       page.logger(message => {
-        console.log(message);
+        logger.info(message);
         page.screenshot();
       })
     )

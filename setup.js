@@ -1,3 +1,4 @@
+const arg = require("arg");
 const assert = require("assert").strict;
 const { writeFile } = require("fs").promises;
 const { WebDriver, Builder, By } = require("selenium-webdriver");
@@ -84,6 +85,28 @@ const build = async () => {
 };
 
 const setup = async () => {
+  const args = arg({
+    "-h": "--help",
+    "--help": Boolean,
+    "--session-id": String
+  });
+  const help = args["--help"];
+  const sessionId =
+    args["--session-id"] != null ? args["--session-id"] : SESSION_ID;
+
+  if (help) {
+    const { basename } = require("path");
+    console.log(
+      [
+        `Usage: ${process.argv0} ${basename(__filename)} [options]`,
+        "Options:",
+        "-h, --help              print command line options",
+        "--session-id=...        set session id"
+      ].join("\n")
+    );
+    return;
+  }
+
   let driver;
   try {
     driver = await build();
@@ -116,7 +139,7 @@ const setup = async () => {
     await driver.get(
       new URL(
         `#/settings?${new URLSearchParams({
-          session_id: SESSION_ID
+          session_id: sessionId
         })}`,
         url
       )
@@ -126,13 +149,17 @@ const setup = async () => {
       "Settings page has not been opened."
     );
 
-    const sessionId = await driver
-      .findElement(By.xpath(`//*[text()="セッションID"]/following-sibling::*`))
-      .getText();
+    assert.equal(
+      await driver
+        .findElement(
+          By.xpath(`//*[text()="セッションID"]/following-sibling::*`)
+        )
+        .getText(),
+      sessionId,
+      "Failed to set Session ID."
+    );
 
-    assert(sessionId === SESSION_ID, "Failed to set Session ID.");
-
-    logger.info(`Session ID: ${SESSION_ID}`);
+    logger.info(`Session ID: ${sessionId}`);
     logger.info("Setup complete.");
   } catch (error) {
     if (driver != null) {

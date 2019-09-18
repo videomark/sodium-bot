@@ -1,21 +1,28 @@
 # Sodium Bot
 
-動画配信サービスの視聴品質を自動計測し続けるやつ
+動画配信サービスの視聴品質の自動計測
 
-## つかいかた
+## 使い方
+
+### 計測の始め方
 
 ```sh
-chromedriver --port=8008 &
-export SELENIUM_REMOTE_URL=http://localhost:8008
-VIDEOMARK_EXTENSION_PATH=/path/to/videomark-extension/ SESSION_ID=sodium node setup.js
-node start.js -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
-node down.js
+docker-compose run --rm bot setup --session-id sodium
+docker-compose run --rm bot start -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
 ```
 
-### Docker コンテナを使う場合
+### 構築
 
 ```sh
 docker-compose up --build -d
-docker-compose run --rm bot start -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
-docker-compose down
 ```
+
+### 撤去
+
+```sh
+docker-compose down --volumes
+```
+
+## 動作環境
+
+- Docker v19, Docker Compose v1.24 にて動作確認

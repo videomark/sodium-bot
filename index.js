@@ -108,11 +108,11 @@ class Page {
         const videos = (await all(
           elements.map(element =>
             all([
-              element.getAttribute("paused").catch(() => null),
-              element.getAttribute("ended").catch(() => null)
-            ])
+              element.getAttribute("paused"),
+              element.getAttribute("ended")
+            ]).catch(() => null)
           )
-        )).filter(attributes => attributes.every(attr => attr != null));
+        )).filter(attributes => attributes != null);
 
         if (isCancel()) break;
 

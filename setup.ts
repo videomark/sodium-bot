@@ -9,13 +9,7 @@ import isSettingsPage from "./utils/isSettingsPage";
 import logger from "./utils/logger";
 
 const { writeFile } = fs;
-
 const { VIDEOMARK_EXTENSION_PATH, SESSION_ID } = process.env;
-Object.entries({ VIDEOMARK_EXTENSION_PATH, SESSION_ID }).forEach(
-  ([env, value]) => {
-    assert(value != null, `${env} required.`);
-  }
-);
 
 const click = (driver: WebDriver) => (cssselector: string) =>
   driver.findElement(By.css(cssselector)).click();
@@ -42,6 +36,10 @@ const waitForContentRendering = async (driver: WebDriver) => {
 };
 
 const build = async () => {
+  if (VIDEOMARK_EXTENSION_PATH == null) {
+    throw new Error("VIDEOMARK_EXTENSION_PATH required.");
+  }
+
   const driver = new Builder()
     .forBrowser("chrome")
     .setChromeOptions(
@@ -83,6 +81,10 @@ const setup = async () => {
   const help = args["--help"];
   const sessionId =
     args["--session-id"] != null ? args["--session-id"] : SESSION_ID;
+
+  if (sessionId == null) {
+    throw new Error("SESSION_ID or --session-id=... required.");
+  }
 
   if (help) {
     const { basename } = await import("path");

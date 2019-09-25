@@ -9,7 +9,7 @@ async function replaceUserAgent(
   );
 
   // NOTE: can't play on linux user agent.
-  if (!/X11; Linux x86_64/.test(userAgent)) {
+  if (!(typeof userAgent == "string" && /X11; Linux x86_64/.test(userAgent))) {
     return async () => {};
   }
 

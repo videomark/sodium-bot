@@ -1,7 +1,6 @@
 import * as arg from "arg";
 import { basename } from "path";
 import { promises as fs } from "fs";
-import { strict as assert } from "assert";
 import { TimeoutError } from "selenium-webdriver";
 import { Driver } from "selenium-webdriver/chrome";
 import { promise, race, after } from "fluture";
@@ -10,11 +9,7 @@ import Executor from "./utils/executor";
 import logger from "./utils/logger";
 
 const { readFile } = fs;
-
 const { SELENIUM_REMOTE_URL } = process.env;
-Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
-  assert(value != null, `${env} required.`);
-});
 
 const retry = async (count: number, proc: Function) => {
   for (const i of Array(count).keys()) {
@@ -33,6 +28,10 @@ const retry = async (count: number, proc: Function) => {
  * @param seconds timeout
  */
 const play = async (url: URL, seconds: number) => {
+  if (SELENIUM_REMOTE_URL == null) {
+    throw new Error("SELENIUM_REMOTE_URL required.");
+  }
+
   const executor = new Executor(SELENIUM_REMOTE_URL);
   const session = JSON.parse((await readFile("./session.json")).toString());
   const driver = new Driver(session, executor);

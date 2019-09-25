@@ -9,17 +9,17 @@ import isParaviPage from "./utils/isParaviPage";
 import isTVerPage from "./utils/isTVerPage";
 import { screenshot } from "./utils/screenshot";
 
-export interface PageConstructorProps {
+interface ConstructorProps {
   driver: WebDriver;
   url: URL;
 }
 
-class Page {
+class PageController {
   player?: Player;
   driver?: WebDriver;
   url?: URL;
 
-  constructor({ driver, url }: PageConstructorProps) {
+  constructor({ driver, url }: ConstructorProps) {
     Object.assign(this, {
       driver,
       url
@@ -154,4 +154,4 @@ class Page {
   }
 }
 
-export { Page };
+export { PageController };

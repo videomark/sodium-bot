@@ -4,7 +4,7 @@ import { promises as fs } from "fs";
 import { TimeoutError } from "selenium-webdriver";
 import { Driver } from "selenium-webdriver/chrome";
 import { promise, race, after } from "fluture";
-import { Page } from "./";
+import { PageController } from "./";
 import Executor from "./utils/executor";
 import logger from "./utils/logger";
 
@@ -35,7 +35,7 @@ const play = async (url: URL, seconds: number) => {
   const executor = new Executor(SELENIUM_REMOTE_URL);
   const session = JSON.parse((await readFile("./session.json")).toString());
   const driver = new Driver(session, executor);
-  const page = new Page({ driver, url });
+  const page = new PageController({ driver, url });
   const timeoutIn = seconds * 1e3;
   const timeoutAt = Date.now() + timeoutIn;
   const timeout = setTimeout(async () => {

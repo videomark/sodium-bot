@@ -1,17 +1,14 @@
-const isSamePage = require("./isSamePage");
+import isSamePage from "./isSamePage";
 
 const protocol = "chrome-extension:";
 const pathname = "/qoelog/index.html";
 const hash = "#/welcome";
 
-/**
- * @param {URL} url
- */
-const isThisPage = url =>
+const isThisPage = (url: URL) =>
   isSamePage(url, {
     protocol,
     pathname,
     hash
   });
 
-module.exports = isThisPage;
+export default isThisPage;

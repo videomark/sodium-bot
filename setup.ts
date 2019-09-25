@@ -1,12 +1,14 @@
-const arg = require("arg");
-const assert = require("assert").strict;
-const { writeFile } = require("fs").promises;
-const { WebDriver, Builder, By } = require("selenium-webdriver");
-const { Options } = require("selenium-webdriver/chrome");
-const isTermsPage = require("./utils/isTermsPage");
-const isWelcomePage = require("./utils/isWelcomePage");
-const isSettingsPage = require("./utils/isSettingsPage");
-const logger = require("./utils/logger");
+import * as arg from "arg";
+import { strict as assert } from "assert";
+import { promises as fs } from "fs";
+import { WebDriver, Builder, By } from "selenium-webdriver";
+import { Options } from "selenium-webdriver/chrome";
+import isTermsPage from "./utils/isTermsPage";
+import isWelcomePage from "./utils/isWelcomePage";
+import isSettingsPage from "./utils/isSettingsPage";
+import logger from "./utils/logger";
+
+const { writeFile } = fs;
 
 const { VIDEOMARK_EXTENSION_PATH, SESSION_ID } = process.env;
 Object.entries({ VIDEOMARK_EXTENSION_PATH, SESSION_ID }).forEach(
@@ -15,16 +17,10 @@ Object.entries({ VIDEOMARK_EXTENSION_PATH, SESSION_ID }).forEach(
   }
 );
 
-/**
- * @param {WebDriver} driver
- */
-const click = driver => cssselector =>
+const click = (driver: WebDriver) => (cssselector: string) =>
   driver.findElement(By.css(cssselector)).click();
 
-/**
- * @param {WebDriver} driver
- */
-const closeOthers = async driver => {
+const closeOthers = async (driver: WebDriver) => {
   const current = await driver.getWindowHandle();
   const others = (await driver.getAllWindowHandles()).filter(
     other => other !== current
@@ -38,19 +34,13 @@ const closeOthers = async driver => {
   await driver.switchTo().window(current);
 };
 
-/**
- * @param {WebDriver} driver
- */
-const waitForContentRendering = async driver => {
-  await driver.wait(driver =>
+const waitForContentRendering = async (driver: WebDriver) => {
+  await driver.wait((driver: WebDriver) =>
     driver.executeScript(`return document.readyState === "complete"`)
   );
   await driver.sleep(300);
 };
 
-/**
- * @return {Promise<WebDriver>}
- */
 const build = async () => {
   const driver = new Builder()
     .forBrowser("chrome")
@@ -95,7 +85,7 @@ const setup = async () => {
     args["--session-id"] != null ? args["--session-id"] : SESSION_ID;
 
   if (help) {
-    const { basename } = require("path");
+    const { basename } = await import("path");
     console.log(
       [
         `Usage: ${process.argv0} ${basename(__filename)} [options]`,

@@ -1,12 +1,11 @@
-const { By } = require("selenium-webdriver");
-const Player = require("./player");
+import { By } from "selenium-webdriver";
+import Player, { PlayerOptions } from "./player";
 
 class YouTubePlayer extends Player {
   /**
    * @override
-   * @param {{driver: WebDriver, url: URL}} options
    */
-  async play({ driver, url }) {
+  async play({ driver, url }: PlayerOptions) {
     await super.play({ driver, url });
     await driver
       .findElement(By.css("button.ytp-ad-survey-interstitial-action-button"))
@@ -19,4 +18,4 @@ class YouTubePlayer extends Player {
   }
 }
 
-module.exports = { YouTubePlayer };
+export { YouTubePlayer };

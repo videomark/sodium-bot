@@ -1,18 +1,25 @@
-const { WebDriver, until, By } = require("selenium-webdriver");
-const Fluture = require("fluture");
-const { YouTubePlayer } = require("./player/youtube");
-const { ParaviPlayer } = require("./player/paravi");
-const { TVerPlayer } = require("./player/tver");
-const isYouTubePage = require("./utils/isYouTubePage");
-const isParaviPage = require("./utils/isParaviPage");
-const isTVerPage = require("./utils/isTVerPage");
-const { screenshot } = require("./utils/screenshot");
+import { WebDriver, until, By } from "selenium-webdriver";
+import Fluture, { FutureInstance } from "fluture";
+import Player from "./player/player";
+import { YouTubePlayer } from "./player/youtube";
+import { ParaviPlayer } from "./player/paravi";
+import { TVerPlayer } from "./player/tver";
+import isYouTubePage from "./utils/isYouTubePage";
+import isParaviPage from "./utils/isParaviPage";
+import isTVerPage from "./utils/isTVerPage";
+import { screenshot } from "./utils/screenshot";
+
+export interface PageConstructorProps {
+  driver: WebDriver;
+  url: URL;
+}
 
 class Page {
-  /**
-   * @param {{driver: WebDriver, url: URL}} options
-   */
-  constructor({ driver, url }) {
+  player?: Player;
+  driver?: WebDriver;
+  url?: URL;
+
+  constructor({ driver, url }: PageConstructorProps) {
     Object.assign(this, {
       driver,
       url
@@ -43,9 +50,9 @@ class Page {
   }
 
   /**
-   * @param {Number} ms timeout
+   * @param ms timeout
    */
-  async waitForSodiumExists(ms) {
+  async waitForSodiumExists(ms: number) {
     const { driver } = this;
 
     await driver.wait(
@@ -56,37 +63,33 @@ class Page {
   }
 
   /**
-   * @param {Number} ms timeout
+   * @param ms timeout
    */
-  async waitForPlaying(ms) {
+  async waitForPlaying(ms: number) {
     const { player } = this;
 
     await player.waitForPlaying(ms);
   }
 
   /**
-   * @param {Number} ms timeout
+   * @param ms timeout
    */
-  async waitForShowStatus(ms) {
+  async waitForShowStatus(ms: number) {
     const { player } = this;
 
     await player.waitForShowStatus(ms);
   }
 
   /**
-   * @param {Number} ms timeout
+   * @param ms timeout
    */
-  async waitForShowQuality(ms) {
+  async waitForShowQuality(ms: number) {
     const { player } = this;
 
     await player.waitForShowQuality(ms);
   }
 
-  /**
-   * @param {Function} logger
-   * @returns {Fluture}
-   */
-  logger(logger) {
+  logger(logger: Function): FutureInstance<any, any> {
     let cancel = false;
     const isCancel = () => cancel;
     const onCancel = () => (cancel = true);
@@ -144,14 +147,11 @@ class Page {
     });
   }
 
-  /**
-   * @param {String} [path]
-   */
-  async screenshot(path = "screenshot.png") {
+  async screenshot(path: string = "screenshot.png") {
     const { driver } = this;
 
     await screenshot(driver, path);
   }
 }
 
-module.exports = { Page };
+export { Page };

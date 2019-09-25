@@ -1,34 +1,37 @@
-const { WebDriver, until, By } = require("selenium-webdriver");
-const Fluture = require("fluture");
-const { promise, race, rejectAfter } = Fluture;
+import { WebDriver, until, By, WebElement } from "selenium-webdriver";
+import Fluture, { promise, race, rejectAfter } from "fluture";
+
+export interface PlayerOptions {
+  driver: WebDriver;
+  url: URL | string;
+}
 
 class Player {
+  driver?: WebDriver;
+
   async onStop() {}
 
-  /**
-   * @param {{driver: WebDriver, url: URL}} options
-   */
-  async play({ driver, url }) {
+  async play({ driver, url }: PlayerOptions) {
     this.driver = driver;
 
-    await driver.get(url);
+    await driver.get(url.toString());
   }
 
-  /**
-   * @param {String} url
-   */
-  async stop(url) {
+  async stop(url: URL | string) {
     const { driver, onStop } = this;
 
     await onStop();
-    await driver.get(url);
+
+    if (driver != null) await driver.get(url.toString());
   }
 
   /**
-   * @param {Number} ms timeout
+   * @param ms timeout
    */
-  async waitForPlaying(ms) {
+  async waitForPlaying(ms: number) {
     const { driver } = this;
+
+    if (driver == null) throw new Error("You need to call play.");
 
     let cancel = false;
     const isCancel = () => cancel;
@@ -36,7 +39,9 @@ class Player {
 
     const waitP = async () => {
       while (!isCancel()) {
-        const elements = await driver.findElements(By.css("video"));
+        const elements: WebElement[] = await driver.findElements(
+          By.css("video")
+        );
 
         if (isCancel()) break;
 
@@ -60,10 +65,12 @@ class Player {
   }
 
   /**
-   * @param {Number} ms timeout
+   * @param ms timeout
    */
-  async waitForShowStatus(ms) {
+  async waitForShowStatus(ms: number) {
     const { driver } = this;
+
+    if (driver == null) throw new Error("You need to call play.");
 
     await driver.wait(
       until.elementsLocated(By.css("#__videomark_ui")),
@@ -73,10 +80,12 @@ class Player {
   }
 
   /**
-   * @param {Number} ms timeout
+   * @param ms timeout
    */
-  async waitForShowQuality(ms) {
+  async waitForShowQuality(ms: number) {
     const { driver } = this;
+
+    if (driver == null) throw new Error("You need to call play.");
 
     let cancel = false;
     const isCancel = () => cancel;
@@ -91,7 +100,8 @@ class Player {
           ].join(";")
         );
 
-        if (isCancel() || /\s[1-5](\.\d*)?\s/.test(text)) break;
+        if (isCancel()) break;
+        if (typeof text === "string" && /\s[1-5](\.\d*)?\s/.test(text)) break;
 
         // NOTE: Interval time (ms).
         await driver.sleep(200);
@@ -107,4 +117,4 @@ class Player {
   }
 }
 
-module.exports = Player;
+export default Player;

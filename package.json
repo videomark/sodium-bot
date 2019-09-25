@@ -5,14 +5,18 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/node": "^12.7.7",
     "arg": "^4.1.1",
     "debug": "^4.1.1",
     "fluture": "^11.0.3",
-    "selenium-webdriver": "^4.0.0-alpha.5"
+    "selenium-webdriver": "^4.0.0-alpha.5",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3"
   },
   "scripts": {
-    "setup": "node setup.js",
-    "start": "node start.js",
-    "down": "node down.js"
+    "setup": "ts-node setup.ts",
+    "start": "ts-node start.ts",
+    "down": "ts-node down.ts"
   }
 }

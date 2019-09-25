@@ -1,11 +1,9 @@
-const { WebDriver, By } = require("selenium-webdriver");
-const Player = require("./player");
+import { WebDriver, By } from "selenium-webdriver";
+import Player, { PlayerOptions } from "./player";
 
-/**
- * @param {WebDriver} driver
- * @returns {Promise<Function>}
- */
-const replaceUserAgent = async driver => {
+async function replaceUserAgent(
+  driver: WebDriver
+): Promise<() => Promise<any>> {
   const userAgent = await driver.executeScript(
     "return window.navigator.userAgent"
   );
@@ -28,14 +26,13 @@ const replaceUserAgent = async driver => {
       userAgent
     });
   };
-};
+}
 
 class TVerPlayer extends Player {
   /**
    * @override
-   * @param {{driver: WebDriver, url: URL}} options
    */
-  async play({ driver, url }) {
+  async play({ driver, url }: PlayerOptions) {
     this.onStop = await replaceUserAgent(driver);
 
     await super.play({ driver, url });
@@ -47,4 +44,4 @@ class TVerPlayer extends Player {
   }
 }
 
-module.exports = { TVerPlayer };
+export { TVerPlayer };

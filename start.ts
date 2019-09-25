@@ -1,23 +1,22 @@
-const arg = require("arg");
-const assert = require("assert");
-const { TimeoutError } = require("selenium-webdriver");
-const { Driver } = require("selenium-webdriver/chrome");
-const Fluture = require("fluture");
-const { promise, race, after } = Fluture;
-const { Page } = require("./");
-const Executor = require("./utils/executor");
-const logger = require("./utils/logger");
+import * as arg from "arg";
+import { basename } from "path";
+import { promises as fs } from "fs";
+import { strict as assert } from "assert";
+import { TimeoutError } from "selenium-webdriver";
+import { Driver } from "selenium-webdriver/chrome";
+import { promise, race, after } from "fluture";
+import { Page } from "./";
+import Executor from "./utils/executor";
+import logger from "./utils/logger";
+
+const { readFile } = fs;
 
 const { SELENIUM_REMOTE_URL } = process.env;
 Object.entries({ SELENIUM_REMOTE_URL }).forEach(([env, value]) => {
   assert(value != null, `${env} required.`);
 });
 
-/**
- * @param {Number} count
- * @param {Function} proc
- */
-const retry = async (count, proc) => {
+const retry = async (count: number, proc: Function) => {
   for (const i of Array(count).keys()) {
     try {
       return await proc();
@@ -30,12 +29,13 @@ const retry = async (count, proc) => {
 };
 
 /**
- * @param {URL} url
- * @param {Number} seconds timeout
+ * @param url
+ * @param seconds timeout
  */
-const play = async (url, seconds) => {
+const play = async (url: URL, seconds: number) => {
   const executor = new Executor(SELENIUM_REMOTE_URL);
-  const driver = new Driver(require("./session.json"), executor);
+  const session = JSON.parse((await readFile("./session.json")).toString());
+  const driver = new Driver(session, executor);
   const page = new Page({ driver, url });
   const timeoutIn = seconds * 1e3;
   const timeoutAt = Date.now() + timeoutIn;
@@ -94,7 +94,6 @@ const start = () => {
   const timeout = args["--timeout"];
 
   if (help || !Number.isFinite(timeout)) {
-    const { basename } = require("path");
     console.log(
       `Usage: ${process.argv0} ${basename(__filename)} [options] url`
     );

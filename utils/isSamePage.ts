@@ -1,8 +1,18 @@
-/**
- * @param {URL} urlLeft
- * @param {URL} urlRight
- */
-const isSamePage = (urlLeft, urlRight) =>
+type URLLike =
+  | URL
+  | {
+      [P in
+        | "protocol"
+        | "username"
+        | "password"
+        | "hostname"
+        | "port"
+        | "pathname"
+        | "search"
+        | "hash"]?: string | RegExp;
+    };
+
+const isSamePage = (urlLeft: URLLike, urlRight: URLLike) =>
   [
     "protocol",
     "username",
@@ -20,4 +30,4 @@ const isSamePage = (urlLeft, urlRight) =>
         : urlLeft[key] === urlRight[key]
     );
 
-module.exports = isSamePage;
+export default isSamePage;

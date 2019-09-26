@@ -113,7 +113,7 @@ const setup = async () => {
       });
     }
     const terms = urls.find(({ url }) => isTermsPage(url));
-    assert(terms != null, "Terms page is not found.");
+    if (terms == null) throw new Error("Terms page is not found.");
 
     await driver.switchTo().window(terms.windowName);
     await closeOthers(driver);
@@ -134,7 +134,7 @@ const setup = async () => {
           session_id: sessionId
         })}`,
         url
-      )
+      ).toString()
     );
     assert(
       isSettingsPage(new URL(await driver.getCurrentUrl())),

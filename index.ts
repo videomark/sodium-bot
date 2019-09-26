@@ -15,15 +15,14 @@ interface ConstructorProps {
 }
 
 class PageController {
-  player?: Player;
-  driver?: WebDriver;
-  url?: URL;
+  player: Player;
+  driver: WebDriver;
+  url: URL;
 
   constructor({ driver, url }: ConstructorProps) {
-    Object.assign(this, {
-      driver,
-      url
-    });
+    this.driver = driver;
+    this.url = url;
+
     if (isYouTubePage(url)) {
       this.player = new YouTubePlayer();
       return;
@@ -89,7 +88,7 @@ class PageController {
     await player.waitForShowQuality(ms);
   }
 
-  logger(logger: Function): FutureInstance<any, any> {
+  logger(logger: (message: string) => void): FutureInstance<any, any> {
     let cancel = false;
     const isCancel = () => cancel;
     const onCancel = () => (cancel = true);
@@ -115,12 +114,15 @@ class PageController {
               element.getAttribute("ended")
             ]).catch(() => null)
           )
-        )).filter(attributes => attributes != null);
+        )).filter(
+          (attributes): attributes is NonNullable<typeof attributes> =>
+            attributes != null
+        );
 
         if (isCancel()) break;
 
-        const playing = videos.filter(([paused]) => !paused).length;
-        const ended = videos.filter(([, ended]) => ended).length;
+        const playing = videos.filter(([paused]) => paused !== "true").length;
+        const ended = videos.filter(([, ended]) => ended === "true").length;
 
         if (
           length.videos !== videos.length ||

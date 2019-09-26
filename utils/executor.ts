@@ -5,7 +5,6 @@ import {
 
 class Executor extends SeleniumExecutor {
   w3c: boolean;
-  defineCommand: Function;
 
   /**
    * @param url Selenium Remote

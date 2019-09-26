@@ -1,6 +1,7 @@
 import * as arg from "arg";
 import { basename } from "path";
 import { promises as fs } from "fs";
+// @ts-ignore: @types/selenium-webdriver has no exported member 'TimeoutError'.
 import { TimeoutError } from "selenium-webdriver";
 import { Driver } from "selenium-webdriver/chrome";
 import { promise, race, after } from "fluture";
@@ -92,7 +93,7 @@ const start = () => {
   const help = args["--help"];
   const timeout = args["--timeout"];
 
-  if (help || !Number.isFinite(timeout)) {
+  if (help || timeout == null || !Number.isFinite(timeout)) {
     console.log(
       `Usage: ${process.argv0} ${basename(__filename)} [options] url`
     );

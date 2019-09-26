@@ -1,9 +1,8 @@
-import { WebDriver, By } from "selenium-webdriver";
+import { By } from "selenium-webdriver";
+import { Driver } from "selenium-webdriver/chrome";
 import Player, { PlayerOptions } from "./player";
 
-async function replaceUserAgent(
-  driver: WebDriver
-): Promise<() => Promise<any>> {
+async function replaceUserAgent(driver: Driver): Promise<() => Promise<any>> {
   const userAgent = await driver.executeScript(
     "return window.navigator.userAgent"
   );
@@ -14,6 +13,7 @@ async function replaceUserAgent(
   }
 
   // NOTE: can't play on linux user agent.
+  // @ts-ignore: Property 'sendDevToolsCommand' does not exist on @types/selenium-webdriver.
   await driver.sendDevToolsCommand("Network.setUserAgentOverride", {
     userAgent: userAgent.replace(
       "X11; Linux x86_64",
@@ -22,6 +22,7 @@ async function replaceUserAgent(
   });
 
   return async () => {
+    // @ts-ignore: Property 'sendDevToolsCommand' does not exist on @types/selenium-webdriver.
     await driver.sendDevToolsCommand("Network.setUserAgentOverride", {
       userAgent
     });

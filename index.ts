@@ -1,51 +1,52 @@
 import { WebDriver, until, By } from "selenium-webdriver";
 import Fluture, { FutureInstance } from "fluture";
-import Player from "./player/player";
-import { YouTubePlayer } from "./player/youtube";
-import { ParaviPlayer } from "./player/paravi";
-import { TVerPlayer } from "./player/tver";
+import * as player from "./player/player";
+import { play as playYouTube } from "./player/youtube";
+import { play as playParavi } from "./player/paravi";
+import { play as playTVer } from "./player/tver";
 import isYouTubePage from "./utils/isYouTubePage";
 import isParaviPage from "./utils/isParaviPage";
 import isTVerPage from "./utils/isTVerPage";
 import { screenshot } from "./utils/screenshot";
 
-interface ConstructorProps {
-  driver: WebDriver;
-  url: URL;
-}
-
 class PageController {
-  player: Player;
   driver: WebDriver;
   url: URL;
+  stopHandler?: player.StopHandler;
 
-  constructor({ driver, url }: ConstructorProps) {
+  constructor({ driver, url }: { driver: WebDriver; url: URL }) {
+    if (!isYouTubePage(url) && !isParaviPage(url) && !isTVerPage(url)) {
+      throw new Error("Not supported URL.");
+    }
     this.driver = driver;
     this.url = url;
-
-    if (isYouTubePage(url)) {
-      this.player = new YouTubePlayer();
-      return;
-    }
-    if (isParaviPage(url)) {
-      this.player = new ParaviPlayer();
-      return;
-    }
-    if (isTVerPage(url)) {
-      this.player = new TVerPlayer();
-      return;
-    }
-    throw new Error("Not supported URL.");
   }
 
   async play() {
-    const { driver, url, player } = this;
+    const { driver, url } = this;
 
-    await player.play({ driver, url });
+    if (isYouTubePage(url)) {
+      this.stopHandler = await playYouTube({ driver, url });
+      return;
+    }
+    if (isParaviPage(url)) {
+      this.stopHandler = await playParavi({ driver, url });
+      return;
+    }
+    if (isTVerPage(url)) {
+      this.stopHandler = await playTVer({ driver, url });
+      return;
+    }
   }
 
   async stop() {
-    await this.player.stop("about:blank");
+    const { driver, stopHandler } = this;
+
+    await player.stop({
+      handler: stopHandler,
+      driver,
+      url: "about:blank"
+    });
   }
 
   /**
@@ -65,30 +66,30 @@ class PageController {
    * @param ms timeout
    */
   async waitForPlaying(ms: number) {
-    const { player } = this;
+    const { driver } = this;
 
-    await player.waitForPlaying(ms);
+    await player.waitForPlaying({ driver, timeout: ms });
   }
 
   /**
    * @param ms timeout
    */
   async waitForShowStatus(ms: number) {
-    const { player } = this;
+    const { driver } = this;
 
-    await player.waitForShowStatus(ms);
+    await player.waitForShowStatus({ driver, timeout: ms });
   }
 
   /**
    * @param ms timeout
    */
   async waitForShowQuality(ms: number) {
-    const { player } = this;
+    const { driver } = this;
 
-    await player.waitForShowQuality(ms);
+    await player.waitForShowQuality({ driver, timeout: ms });
   }
 
-  logger(logger: (message: string) => void): FutureInstance<any, any> {
+  logger(handler: (message: string) => void): FutureInstance<never, void> {
     let cancel = false;
     const isCancel = () => cancel;
     const onCancel = () => (cancel = true);
@@ -129,7 +130,7 @@ class PageController {
           length.playing !== playing ||
           length.ended !== ended
         ) {
-          logger(`${videos.length} videos ${playing} playing ${ended} ended`);
+          handler(`${videos.length} videos ${playing} playing ${ended} ended`);
         }
 
         length = {

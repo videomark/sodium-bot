@@ -12,10 +12,11 @@ import logger from "./utils/logger";
 const { readFile } = fs;
 const { SELENIUM_REMOTE_URL } = process.env;
 
-const retry = async (count: number, proc: Function) => {
+const retry = async (count: number, proc: () => Promise<void>) => {
   for (const i of Array(count).keys()) {
     try {
-      return await proc();
+      await proc();
+      return;
     } catch (error) {
       logger.error(error);
       if (i + 1 === count) break;
@@ -72,7 +73,7 @@ const play = async (url: URL, seconds: number) => {
 
   await promise(
     race(
-      after(Math.max(0, timeoutAt - Date.now()), ""),
+      after(Math.max(0, timeoutAt - Date.now()), undefined),
       page.logger(message => {
         logger.info(message);
         page.screenshot();
@@ -83,7 +84,7 @@ const play = async (url: URL, seconds: number) => {
   await page.stop();
 };
 
-const start = () => {
+const main = async () => {
   const args = arg({
     "-h": "--help",
     "--help": Boolean,
@@ -112,7 +113,7 @@ const start = () => {
     throw event;
   });
 
-  play(new URL(args._[0]), timeout);
+  await play(new URL(args._[0]), timeout);
 };
 
-if (require.main === module) start();
+if (require.main === module) main();

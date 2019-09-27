@@ -11,8 +11,33 @@ import logger from "./utils/logger";
 const { writeFile } = fs;
 const { VIDEOMARK_EXTENSION_PATH, SESSION_ID } = process.env;
 
+const waitForContentRendering = async (driver: WebDriver) => {
+  await driver.wait((driver: WebDriver) =>
+    driver.executeScript(`return document.readyState === "complete"`)
+  );
+  await driver.sleep(300);
+};
+
 const click = (driver: WebDriver) => (cssselector: string) =>
   driver.findElement(By.css(cssselector)).click();
+
+const switchToTermsPage = async (driver: WebDriver) => {
+  const windows = await driver.getAllWindowHandles();
+
+  const urls = [];
+  for (const windowName of windows) {
+    await driver.switchTo().window(windowName);
+    urls.push({
+      windowName,
+      url: new URL(await driver.getCurrentUrl())
+    });
+  }
+  const terms = urls.find(({ url }) => isTermsPage(url));
+  if (terms == null) throw new Error("Terms page is not found.");
+
+  await driver.switchTo().window(terms.windowName);
+  await waitForContentRendering(driver);
+};
 
 const closeOthers = async (driver: WebDriver) => {
   const current = await driver.getWindowHandle();
@@ -28,11 +53,20 @@ const closeOthers = async (driver: WebDriver) => {
   await driver.switchTo().window(current);
 };
 
-const waitForContentRendering = async (driver: WebDriver) => {
-  await driver.wait((driver: WebDriver) =>
-    driver.executeScript(`return document.readyState === "complete"`)
-  );
-  await driver.sleep(300);
+const agreeToTerms = async (driver: WebDriver) => {
+  await switchToTermsPage(driver);
+  await closeOthers(driver);
+
+  ["#terms", "#privacy", "#submit"].forEach(click(driver));
+  await waitForContentRendering(driver);
+
+  // NOTE: wait for welcome page to open.
+  await driver.sleep(1e3);
+
+  const url = new URL(await driver.getCurrentUrl());
+  assert(isWelcomePage(url), "Welcome page has not been opened.");
+
+  return url;
 };
 
 const build = async () => {
@@ -72,7 +106,7 @@ const build = async () => {
   return driver;
 };
 
-const setup = async () => {
+const main = async () => {
   const args = arg({
     "-h": "--help",
     "--help": Boolean,
@@ -102,32 +136,7 @@ const setup = async () => {
   let driver;
   try {
     driver = await build();
-
-    const windows = await driver.getAllWindowHandles();
-    const urls = [];
-    for (const windowName of windows) {
-      await driver.switchTo().window(windowName);
-      urls.push({
-        windowName,
-        url: new URL(await driver.getCurrentUrl())
-      });
-    }
-    const terms = urls.find(({ url }) => isTermsPage(url));
-    if (terms == null) throw new Error("Terms page is not found.");
-
-    await driver.switchTo().window(terms.windowName);
-    await closeOthers(driver);
-    await waitForContentRendering(driver);
-
-    ["#terms", "#privacy", "#submit"].forEach(click(driver));
-    await waitForContentRendering(driver);
-
-    // NOTE: wait for welcome page to open.
-    await driver.sleep(1e3);
-
-    const url = new URL(await driver.getCurrentUrl());
-    assert(isWelcomePage(url), "Welcome page has not been opened.");
-
+    const url = await agreeToTerms(driver);
     await driver.get(
       new URL(
         `#/settings?${new URLSearchParams({
@@ -162,4 +171,4 @@ const setup = async () => {
   }
 };
 
-if (require.main === module) setup();
+if (require.main === module) main();

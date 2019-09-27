@@ -1,8 +1,8 @@
 import { By } from "selenium-webdriver";
 import { Driver } from "selenium-webdriver/chrome";
-import Player, { PlayerOptions } from "./player";
+import * as player from "./player";
 
-async function replaceUserAgent(driver: Driver): Promise<() => Promise<any>> {
+async function replaceUserAgent(driver: Driver): Promise<player.StopHandler> {
   const userAgent = await driver.executeScript(
     "return window.navigator.userAgent"
   );
@@ -29,20 +29,16 @@ async function replaceUserAgent(driver: Driver): Promise<() => Promise<any>> {
   };
 }
 
-class TVerPlayer extends Player {
-  /**
-   * @override
-   */
-  async play({ driver, url }: PlayerOptions) {
-    this.onStop = await replaceUserAgent(driver);
-
-    await super.play({ driver, url });
-    await driver.executeScript("return closeEnquete()");
-    await driver
-      .findElement(By.xpath(`//a[text()="最初から再生する"]`))
-      .then(el => el.click())
-      .catch(() => {});
-  }
+export async function play({
+  driver,
+  url
+}: player.Options): ReturnType<typeof player.play> {
+  const stopHandler = await replaceUserAgent(driver);
+  await driver.get(url.toString());
+  await driver.executeScript("return closeEnquete()");
+  await driver
+    .findElement(By.xpath(`//a[text()="最初から再生する"]`))
+    .click()
+    .catch(() => {});
+  return stopHandler;
 }
-
-export { TVerPlayer };

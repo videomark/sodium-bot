@@ -6,7 +6,7 @@ import logger from "./utils/logger";
 const { readFile, unlink } = fs;
 const { SELENIUM_REMOTE_URL } = process.env;
 
-const down = async () => {
+const main = async () => {
   if (SELENIUM_REMOTE_URL == null) {
     throw new Error("SELENIUM_REMOTE_URL required.");
   }
@@ -18,4 +18,4 @@ const down = async () => {
   logger.info("Quit session.");
 };
 
-if (require.main === module) down();
+if (require.main === module) main();

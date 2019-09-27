@@ -1,21 +1,17 @@
 import { By } from "selenium-webdriver";
-import Player, { PlayerOptions } from "./player";
+import * as player from "./player";
 
-class YouTubePlayer extends Player {
-  /**
-   * @override
-   */
-  async play({ driver, url }: PlayerOptions) {
-    await super.play({ driver, url });
-    await driver
-      .findElement(By.css("button.ytp-ad-survey-interstitial-action-button"))
-      .then(el => el.click())
-      .catch(() => {});
-    await driver
-      .findElement(By.css("button.ytp-ad-skip-button"))
-      .then(el => el.click())
-      .catch(() => {});
-  }
+export async function play({
+  driver,
+  url
+}: player.Options): ReturnType<typeof player.play> {
+  await driver.get(url.toString());
+  await driver
+    .findElement(By.css("button.ytp-ad-survey-interstitial-action-button"))
+    .click()
+    .catch(() => {});
+  await driver
+    .findElement(By.css("button.ytp-ad-skip-button"))
+    .click()
+    .catch(() => {});
 }
-
-export { YouTubePlayer };

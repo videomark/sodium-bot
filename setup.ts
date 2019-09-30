@@ -1,14 +1,13 @@
 import * as arg from "arg";
 import { strict as assert } from "assert";
-import { promises as fs } from "fs";
 import { WebDriver, Builder, By } from "selenium-webdriver";
 import { Options } from "selenium-webdriver/chrome";
+import { saveSession } from "./utils/session";
 import isTermsPage from "./utils/isTermsPage";
 import isWelcomePage from "./utils/isWelcomePage";
 import isSettingsPage from "./utils/isSettingsPage";
 import logger from "./utils/logger";
 
-const { writeFile } = fs;
 const { VIDEOMARK_EXTENSION_PATH, SESSION_ID } = process.env;
 
 const waitForContentRendering = async (driver: WebDriver) => {
@@ -94,10 +93,7 @@ const build = async () => {
     )
     .build();
 
-  await writeFile(
-    "session.json",
-    JSON.stringify((await driver.getSession()).getId())
-  );
+  await saveSession(driver);
   logger.info("Save WebDriver session file.");
 
   // NOTE: wait for terms page to open.

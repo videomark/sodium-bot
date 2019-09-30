@@ -1,16 +1,11 @@
 import * as arg from "arg";
 import { basename } from "path";
-import { promises as fs } from "fs";
 // @ts-ignore: @types/selenium-webdriver has no exported member 'TimeoutError'.
 import { TimeoutError } from "selenium-webdriver";
-import { Driver } from "selenium-webdriver/chrome";
 import { promise, race, after } from "fluture";
 import { PageController } from "./";
-import Executor from "./utils/executor";
+import { loadSession } from "./utils/session";
 import logger from "./utils/logger";
-
-const { readFile } = fs;
-const { SELENIUM_REMOTE_URL } = process.env;
 
 const retry = async (count: number, proc: () => Promise<void>) => {
   for (const i of Array(count).keys()) {
@@ -30,13 +25,7 @@ const retry = async (count: number, proc: () => Promise<void>) => {
  * @param seconds timeout
  */
 const play = async (url: URL, seconds: number) => {
-  if (SELENIUM_REMOTE_URL == null) {
-    throw new Error("SELENIUM_REMOTE_URL required.");
-  }
-
-  const executor = new Executor(SELENIUM_REMOTE_URL);
-  const session = JSON.parse((await readFile("./session.json")).toString());
-  const driver = new Driver(session, executor);
+  const driver = await loadSession();
   const page = new PageController({ driver, url });
   const timeoutIn = seconds * 1e3;
   const timeoutAt = Date.now() + timeoutIn;

@@ -1,4 +1,4 @@
-import { WebDriver, until, By } from "selenium-webdriver";
+import { WebDriver, By } from "selenium-webdriver";
 import Fluture, { FutureInstance } from "fluture";
 import * as player from "./player/player";
 import { play as playYouTube } from "./player/youtube";
@@ -47,19 +47,6 @@ class PageController {
       driver,
       url: "about:blank"
     });
-  }
-
-  /**
-   * @param ms timeout
-   */
-  async waitForSodiumExists(ms: number) {
-    const { driver } = this;
-
-    await driver.wait(
-      until.elementsLocated(By.css(`script[src^="chrome"][src$="/sodium.js"]`)),
-      ms,
-      "Sodium.js not found."
-    );
   }
 
   /**

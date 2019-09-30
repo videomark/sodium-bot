@@ -17,6 +17,7 @@ services:
       SELENIUM_REMOTE_URL: http://chrome:8008
       VIDEOMARK_EXTENSION_PATH: videomark-extension
       SESSION_ID: sodium
+      # BROWSER: chrome
       # DEBUG: "*"
     volumes:
       - ".:/app"

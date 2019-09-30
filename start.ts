@@ -40,9 +40,6 @@ const play = async (url: URL, seconds: number) => {
       await page.screenshot();
       await page.play();
       await page.screenshot();
-      await page.waitForSodiumExists(1e3);
-      logger.info("Sodium exists.");
-      await page.screenshot();
       await page.waitForPlaying(10e3);
       logger.info("Playing.");
       await page.screenshot();

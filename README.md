@@ -20,9 +20,37 @@ docker-compose up --build -d
 ### 撤去
 
 ```sh
+docker-compose run --rm bot down
 docker-compose down --volumes
+```
+
+### Android 端末の場合
+
+USB デバッグを有効化した後、ホスト側のパソコンと接続する。
+加えて、あらかじめ VideoMark Browser を起動しておき、新しいタブを開いておく。
+
+```sh
+adb start-server
+CHROMEDRIVER_VERSION=70.0.3538.97 npx --ignore-existing chromedriver --port=8080 &
+export SELENIUM_REMOTE_URL=http://localhost:8080
+npm ci
+npm run setup -- --android
+npm run start -- -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
+npm run down
 ```
 
 ## 動作環境
 
 - Docker v19, Docker Compose v1.24 にて動作確認
+
+### Android 端末
+
+ホスト:
+
+- adb v1.0.39
+- node v12.10.0
+- npm, npx v6.11.3
+
+クライアント:
+
+- VideoMark Browser v70.0.3538.124-7

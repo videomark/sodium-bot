@@ -1,14 +1,13 @@
 import * as arg from "arg";
 import { strict as assert } from "assert";
-import { WebDriver, Builder, By } from "selenium-webdriver";
-import { Options } from "selenium-webdriver/chrome";
+import { WebDriver, Builder, By, Capabilities } from "selenium-webdriver";
 import { saveSession } from "./utils/session";
 import isTermsPage from "./utils/isTermsPage";
 import isWelcomePage from "./utils/isWelcomePage";
 import isSettingsPage from "./utils/isSettingsPage";
 import logger from "./utils/logger";
 
-const { VIDEOMARK_EXTENSION_PATH, SESSION_ID } = process.env;
+const { VIDEOMARK_EXTENSION_PATH, SESSION_ID, BROWSER } = process.env;
 
 const waitForContentRendering = async (driver: WebDriver) => {
   await driver.wait((driver: WebDriver) =>
@@ -68,31 +67,66 @@ const agreeToTerms = async (driver: WebDriver) => {
   return url;
 };
 
-const build = async () => {
-  if (VIDEOMARK_EXTENSION_PATH == null) {
-    throw new Error("VIDEOMARK_EXTENSION_PATH required.");
-  }
+const setSessionId = async (driver: WebDriver, sessionId: string) => {
+  const url = await agreeToTerms(driver);
+  await driver.get(
+    new URL(
+      `#/settings?${new URLSearchParams({
+        session_id: sessionId
+      })}`,
+      url
+    ).toString()
+  );
+  assert(
+    isSettingsPage(new URL(await driver.getCurrentUrl())),
+    "Settings page has not been opened."
+  );
 
-  const driver = new Builder()
-    .forBrowser("chrome")
-    .setChromeOptions(
-      new Options()
-        .addArguments(
+  assert.equal(
+    await driver
+      .findElement(By.xpath(`//*[text()="セッションID"]/following-sibling::*`))
+      .getText(),
+    sessionId,
+    "Failed to set Session ID."
+  );
+};
+
+const build = async (browser: string = "chrome") => {
+  let capabilities: Capabilities | {} = {};
+  switch (browser) {
+    case "chrome": {
+      if (VIDEOMARK_EXTENSION_PATH == null) {
+        throw new Error("VIDEOMARK_EXTENSION_PATH required.");
+      }
+      capabilities = Capabilities.chrome().set("goog:chromeOptions", {
+        args: [
           "--no-sandbox",
           "--disable-dev-shm-usage",
           `--load-extension=${VIDEOMARK_EXTENSION_PATH}`,
           // NOTE: for Paravi.
           "--autoplay-policy=no-user-gesture-required"
-        )
-        .excludeSwitches(
+        ],
+        excludeSwitches: [
           // NOTE: for Paravi.
           "--disable-background-networking",
           // NOTE: for Paravi.
           "--disable-default-apps"
-        )
-    )
-    .build();
+        ]
+      });
+      break;
+    }
+    case "android": {
+      capabilities = Capabilities.chrome().set("goog:chromeOptions", {
+        androidExecName: "chrome",
+        androidDeviceSocket: "chrome_devtools_remote",
+        androidPackage: "org.webdino.videomarkbrowser",
+        androidUseRunningApp: true
+      });
+      break;
+    }
+  }
 
+  const driver = new Builder().withCapabilities(capabilities).build();
   await saveSession(driver);
   logger.info("Save WebDriver session file.");
 
@@ -106,57 +140,40 @@ const main = async () => {
   const args = arg({
     "-h": "--help",
     "--help": Boolean,
+    "--android": Boolean,
     "--session-id": String
   });
-  const help = args["--help"];
-  const sessionId =
-    args["--session-id"] != null ? args["--session-id"] : SESSION_ID;
 
-  if (sessionId == null) {
-    throw new Error("SESSION_ID or --session-id=... required.");
-  }
-
-  if (help) {
+  if (args["-h"]) {
     const { basename } = await import("path");
     console.log(
       [
         `Usage: ${process.argv0} ${basename(__filename)} [options]`,
         "Options:",
         "-h, --help              print command line options",
+        "--android               connect to android device with adb",
         "--session-id=...        set session id"
       ].join("\n")
     );
     return;
   }
 
+  const browser = args["--android"] ? "android" : BROWSER;
+  const sessionId =
+    args["--session-id"] == null ? SESSION_ID : args["--session-id"];
+
   let driver;
   try {
-    driver = await build();
-    const url = await agreeToTerms(driver);
-    await driver.get(
-      new URL(
-        `#/settings?${new URLSearchParams({
-          session_id: sessionId
-        })}`,
-        url
-      ).toString()
-    );
-    assert(
-      isSettingsPage(new URL(await driver.getCurrentUrl())),
-      "Settings page has not been opened."
-    );
-
-    assert.equal(
-      await driver
-        .findElement(
-          By.xpath(`//*[text()="セッションID"]/following-sibling::*`)
-        )
-        .getText(),
-      sessionId,
-      "Failed to set Session ID."
-    );
-
-    logger.info(`Session ID: ${sessionId}`);
+    driver = await build(browser);
+    if (browser === "android") {
+      logger.info("Settings page is not yet supported.");
+    } else {
+      if (sessionId == null) {
+        throw new Error("SESSION_ID or --session-id=... required.");
+      }
+      await setSessionId(driver, sessionId);
+      logger.info(`Session ID: ${sessionId}`);
+    }
     logger.info("Setup complete.");
   } catch (error) {
     if (driver != null) {

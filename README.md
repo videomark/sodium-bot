@@ -58,6 +58,8 @@ export VIDEOMARK_EXTENSION_PATH=$PWD/videomark-extension
 #### 計測の始め方
 
 ```sh
+chromedriver --port=8080 &
+export SELENIUM_REMOTE_URL=http://localhost:8080
 npm ci
 npm run setup
 npm run start -- -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
@@ -84,6 +86,11 @@ npm run down
 - Docker v19, Docker Compose v1.24 にて動作確認
 
 ### arm64 環境
+
+ホスト:
+
+- node v12.10.0
+- npm v6.11.3
 
 ### Android 端末
 

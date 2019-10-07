@@ -24,6 +24,46 @@ docker-compose run --rm bot down
 docker-compose down --volumes
 ```
 
+### arm64 環境の場合
+
+あらかじめ Chromium と Chromedriver をインストールする。
+加えて、VideoMark Extension をダウンロードする。
+
+#### Chromium と Chromedriver のインストール
+
+Ubuntu:
+
+```sh
+sudo apt-get install -y chromium-browser chromium-chromedriver
+```
+
+Debian:
+
+```sh
+sudo apt-get install -y chromium chromium-driver
+```
+
+#### VideoMark Extension のダウンロード
+
+```sh
+curl \
+    -sL https://sodium-extension.netlify.com/ \
+    -o dist.zip \
+  && mkdir videomark-extension \
+  && unzip -q dist.zip -d videomark-extension \
+  && rm dist.zip
+export VIDEOMARK_EXTENSION_PATH=$PWD/videomark-extension
+```
+
+#### 計測の始め方
+
+```sh
+npm ci
+npm run setup
+npm run start -- -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
+npm run down
+```
+
 ### Android 端末の場合
 
 USB デバッグを有効化した後、ホスト側のパソコンと接続する。
@@ -42,6 +82,8 @@ npm run down
 ## 動作環境
 
 - Docker v19, Docker Compose v1.24 にて動作確認
+
+### arm64 環境
 
 ### Android 端末
 

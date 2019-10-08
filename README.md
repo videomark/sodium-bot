@@ -26,21 +26,32 @@ docker-compose down --volumes
 
 ### arm64 環境の場合
 
-あらかじめ Chromium と Chromedriver をインストールする。
+あらかじめ Chromium と ChromeDriver をインストールする。
 加えて、VideoMark Extension をダウンロードする。
 
-#### Chromium と Chromedriver のインストール
+#### Chromium のインストール
 
 Ubuntu:
 
 ```sh
-sudo apt-get install -y chromium-browser chromium-chromedriver
+sudo apt-get install -y chromium-browser
 ```
 
 Debian:
 
 ```sh
-sudo apt-get install -y chromium chromium-driver
+sudo apt-get install -y chromium
+```
+
+#### ChromeDriver のインストール
+
+```sh
+curl \
+  -sL https://github.com/electron/electron/releases/download/v6.0.11/chromedriver-v6.0.11-linux-arm64.zip \
+  -o chromedriver.zip
+sudo unzip -q chromedriver.zip -d /usr/local/bin
+sudo chmod +x /usr/local/bin/chromedriver
+rm chromedriver.zip
 ```
 
 #### VideoMark Extension のダウンロード
@@ -61,7 +72,7 @@ export VIDEOMARK_EXTENSION_PATH=$PWD/videomark-extension
 chromedriver --port=8080 &
 export SELENIUM_REMOTE_URL=http://localhost:8080
 npm ci
-npm run setup
+npm run setup -- --session-id sodium
 npm run start -- -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
 npm run down
 ```

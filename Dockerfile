@@ -4,4 +4,4 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
 ENTRYPOINT ["npm","run","--"]
-CMD ["setup"]
+CMD ["start"]

@@ -30,20 +30,12 @@ interface Video {
 ### 計測の始め方
 
 ```sh
-docker-compose run --rm bot setup --session-id sodium
-docker-compose run --rm bot start
-```
-
-### 構築
-
-```sh
-docker-compose up --build -d
+docker-compose up -d
 ```
 
 ### 撤去
 
 ```sh
-docker-compose run --rm bot down
 docker-compose down --volumes
 ```
 
@@ -94,10 +86,9 @@ export VIDEOMARK_EXTENSION_PATH=$PWD/videomark-extension
 ```sh
 chromedriver --port=8080 &
 export SELENIUM_REMOTE_URL=http://localhost:8080
+export SESSION_ID=sodium
 npm ci
-npm run setup -- --session-id sodium
 npm start
-npm run down
 ```
 
 ### Android 端末の場合
@@ -109,10 +100,9 @@ USB デバッグを有効化した後、ホスト側のパソコンと接続す�
 adb start-server
 CHROMEDRIVER_VERSION=70.0.3538.97 npx --ignore-existing chromedriver --port=8080 &
 export SELENIUM_REMOTE_URL=http://localhost:8080
+export BROWSER=android
 npm ci
-npm run setup -- --android
 npm start
-npm run down
 ```
 
 ## 動作環境

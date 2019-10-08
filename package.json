@@ -16,8 +16,10 @@
     "typescript": "^3.6.3"
   },
   "scripts": {
-    "setup": "ts-node setup.ts",
+    "prestart": "npm run setup",
+    "poststart": "npm run down",
     "start": "ts-node start.ts",
+    "setup": "ts-node setup.ts",
     "down": "ts-node down.ts"
   }
 }

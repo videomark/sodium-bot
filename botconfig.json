@@ -1,0 +1,7 @@
+{
+  "playlist": [
+    { "url": "https://www.youtube.com/watch?v=mY6sChi65oU", "timeout": 180 },
+    { "url": "https://www.youtube.com/watch?v=9Tp6CuA62sw", "timeout": 150 },
+    { "url": "https://www.youtube.com/watch?v=IvOEuLuppIk", "timeout": 240 }
+  ]
+}

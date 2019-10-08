@@ -4,11 +4,34 @@
 
 ## 使い方
 
+カレントディレクトリに [botconfig.json](botconfig.json) を配置し、計測を開始する。
+
+### botconfig.json
+
+デフォルトで読み込まれる再生する動画の一覧 (playlist) を記載した JSON ファイル。
+
+playlist:
+次の Video オブジェクトの配列
+
+Video オブジェクト:
+
+```ts
+interface Video {
+  url: string;
+  timeout: number;
+}
+```
+
+| プロパティ | 説明                  |
+| ---------- | --------------------- |
+| url        | 測定対象の動画の URL  |
+| timeout    | 測定し続ける時間 (秒) |
+
 ### 計測の始め方
 
 ```sh
 docker-compose run --rm bot setup --session-id sodium
-docker-compose run --rm bot start -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
+docker-compose run --rm bot start
 ```
 
 ### 構築
@@ -73,7 +96,7 @@ chromedriver --port=8080 &
 export SELENIUM_REMOTE_URL=http://localhost:8080
 npm ci
 npm run setup -- --session-id sodium
-npm run start -- -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
+npm start
 npm run down
 ```
 
@@ -88,7 +111,7 @@ CHROMEDRIVER_VERSION=70.0.3538.97 npx --ignore-existing chromedriver --port=8080
 export SELENIUM_REMOTE_URL=http://localhost:8080
 npm ci
 npm run setup -- --android
-npm run start -- -t 60 https://www.youtube.com/watch?v=mY6sChi65oU
+npm start
 npm run down
 ```
 

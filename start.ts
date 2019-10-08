@@ -24,7 +24,7 @@ const retry = async (count: number, proc: () => Promise<void>) => {
  * @param url
  * @param seconds timeout
  */
-const play = async (url: URL, seconds: number) => {
+const play = async (url: URL, seconds: number = 60) => {
   const driver = await loadSession();
   const page = new PageController({ driver, url });
   const timeoutIn = seconds * 1e3;
@@ -37,6 +37,7 @@ const play = async (url: URL, seconds: number) => {
   try {
     await retry(3, async () => {
       logger.info("Play...");
+      logger.info(`URL: ${url}`);
       await page.screenshot();
       await page.play();
       await page.screenshot();
@@ -68,6 +69,22 @@ const play = async (url: URL, seconds: number) => {
   );
 
   await page.stop();
+  logger.info("Stop.");
+};
+
+const autoPlay = async () => {
+  const { promises: fs } = await import("fs");
+  const { readFile } = fs;
+  const { playlist } = JSON.parse(
+    (await readFile("./botconfig.json")).toString()
+  );
+  for (const { url, timeout } of playlist) {
+    try {
+      await play(new URL(url), timeout);
+    } catch (error) {
+      logger.error(error);
+    }
+  }
 };
 
 const main = async () => {
@@ -79,14 +96,13 @@ const main = async () => {
   });
   const help = args["--help"];
   const timeout = args["--timeout"];
+  const url = args._[0];
 
-  if (help || timeout == null || !Number.isFinite(timeout)) {
-    console.log(
-      `Usage: ${process.argv0} ${basename(__filename)} [options] url`
-    );
-    console.log("Options:");
+  if (help) {
     console.log(
       [
+        `Usage: ${process.argv0} ${basename(__filename)} [options] [url]`,
+        "Options:",
         "-h, --help              print command line options",
         "-t, --timeout=...       set timeout period (seconds)"
       ].join("\n")
@@ -99,7 +115,11 @@ const main = async () => {
     throw event;
   });
 
-  await play(new URL(args._[0]), timeout);
+  if (url == null) {
+    await autoPlay();
+  } else {
+    await play(new URL(url), timeout);
+  }
 };
 
 if (require.main === module) main();

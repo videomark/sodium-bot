@@ -59,7 +59,7 @@ const agreeToTerms = async (driver: WebDriver) => {
   await waitForContentRendering(driver);
 
   // NOTE: wait for welcome page to open.
-  await driver.sleep(1e3);
+  await driver.sleep(5e3);
 
   const url = new URL(await driver.getCurrentUrl());
   assert(isWelcomePage(url), "Welcome page has not been opened.");
@@ -171,6 +171,8 @@ const main = async () => {
       if (sessionId == null) {
         throw new Error("SESSION_ID or --session-id=... required.");
       }
+      // NOTE: Wait for warm up.
+      await driver.sleep(5e3);
       await setSessionId(driver, sessionId);
       logger.info(`Session ID: ${sessionId}`);
     }

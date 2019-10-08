@@ -2,13 +2,15 @@ import { By } from "selenium-webdriver";
 import { Driver } from "selenium-webdriver/chrome";
 import * as player from "./player";
 
+const linuxUserAgentRegExp = /X11; Linux (x86_64|aarch64)/;
+
 async function replaceUserAgent(driver: Driver): Promise<player.StopHandler> {
   const userAgent = await driver.executeScript(
     "return window.navigator.userAgent"
   );
 
   // NOTE: can't play on linux user agent.
-  if (!(typeof userAgent == "string" && /X11; Linux x86_64/.test(userAgent))) {
+  if (!(typeof userAgent == "string" && linuxUserAgentRegExp.test(userAgent))) {
     return async () => {};
   }
 
@@ -16,7 +18,7 @@ async function replaceUserAgent(driver: Driver): Promise<player.StopHandler> {
   // @ts-ignore: Property 'sendDevToolsCommand' does not exist on @types/selenium-webdriver.
   await driver.sendDevToolsCommand("Network.setUserAgentOverride", {
     userAgent: userAgent.replace(
-      "X11; Linux x86_64",
+      linuxUserAgentRegExp,
       "Windows NT 10.0; Win64; x64"
     )
   });

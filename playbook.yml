@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  tasks:
+    # TODO: chromedriver service restart
+    - cron:
+        name: ansible-pull
+        # state: absent
+        minute: "*/5"
+        job: >
+          ansible-pull
+            --only-if-changed
+            --url git@github.com:webdino/sodium.git
+            sodium-bot/playbook.yml
+    # - cron:
+    #     name: sodium-bot
+    #     # state: absent
+    #     special_time: hourly
+    #     # TODO: npm start
+    #     job:
+    - npm:
+        path: sodium-bot
+        ci: yes

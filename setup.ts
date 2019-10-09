@@ -101,7 +101,6 @@ const build = async (browser: string = "chrome") => {
       capabilities = Capabilities.chrome().set("goog:chromeOptions", {
         args: [
           "--no-sandbox",
-          "--disable-dev-shm-usage",
           `--load-extension=${VIDEOMARK_EXTENSION_PATH}`,
           // NOTE: for Paravi.
           "--autoplay-policy=no-user-gesture-required"

@@ -9,6 +9,7 @@ services:
       PORT: "8008"
     ports:
       - "8008:8008"
+    shm_size: 256M
   bot:
     build: "."
     depends_on:

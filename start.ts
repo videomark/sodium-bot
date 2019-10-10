@@ -1,7 +1,5 @@
 import * as arg from "arg";
 import { basename } from "path";
-// @ts-ignore: @types/selenium-webdriver has no exported member 'TimeoutError'.
-import { TimeoutError } from "selenium-webdriver";
 import { promise, race, after } from "fluture";
 import { PageController } from "./";
 import { loadSession } from "./utils/session";
@@ -31,7 +29,7 @@ const play = async (url: URL, seconds: number = 60) => {
   const timeoutAt = Date.now() + timeoutIn;
   const timeout = setTimeout(async () => {
     await page.stop();
-    throw new TimeoutError(`${seconds} seconds timeout.`);
+    throw new Error(`${seconds} seconds timeout.`);
   }, timeoutIn);
 
   try {

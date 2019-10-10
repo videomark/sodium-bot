@@ -1,7 +1,6 @@
 ---
 - hosts: localhost
   tasks:
-    # TODO: chromedriver service restart
     - cron:
         name: ansible-pull
         # state: absent
@@ -11,12 +10,40 @@
             --only-if-changed
             --url git@github.com:webdino/sodium.git
             sodium-bot/playbook.yml
-    # - cron:
-    #     name: sodium-bot
-    #     # state: absent
-    #     special_time: hourly
-    #     # TODO: npm start
-    #     job:
+    - file:
+        state: absent
+        path: "{{ ansible_env.HOME }}/videomark-extension"
+    - file:
+        state: directory
+        path: "{{ ansible_env.HOME }}/videomark-extension"
+    - unarchive:
+        remote_src: yes
+        src: https://sodium-extension.netlify.com/
+        dest: "{{ ansible_env.HOME }}/videomark-extension"
+    - cron:
+        env: yes
+        # state: absent
+        name: VIDEOMARK_EXTENSION_PATH
+        value: "{{ ansible_env.HOME }}/videomark-extension"
+    - shell: pkill chromedriver; chromedriver --port=8008 &
+    - cron:
+        env: yes
+        # state: absent
+        name: SELENIUM_REMOTE_URL
+        value: http://localhost:8008
+    - cron:
+        env: yes
+        # state: absent
+        name: SESSION_ID
+        value: sodium
     - npm:
         path: sodium-bot
         ci: yes
+    - cron:
+        name: sodium-bot
+        # state: absent
+        minute: "*/5"
+        job: |
+          cd -- "{{ ansible_env.PWD }}/sodium-bot"
+          test -f session.json && npm run down
+          npm start >>stdout.log 2>>stderr.log

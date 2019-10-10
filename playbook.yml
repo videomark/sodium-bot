@@ -30,10 +30,6 @@
         # state: absent
         name: VIDEOMARK_EXTENSION_PATH
         value: "{{ ansible_env.HOME }}/videomark-extension"
-    - shell: pkill chromium-browser
-      ignore_errors: yes
-    - shell: pkill chromedriver
-      ignore_errors: yes
     - cron:
         name: chromedriver
         # state: absent
@@ -60,4 +56,4 @@
           cd -- "{{ ansible_env.PWD }}";
           test -f session.json && npm run down;
           npm start >> "{{ ansible_env.HOME }}"/sodium-bot.log 2>&1
-    - reboot:
+    - shell: sudo reboot

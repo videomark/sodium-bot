@@ -25,6 +25,8 @@
         # state: absent
         name: VIDEOMARK_EXTENSION_PATH
         value: "{{ ansible_env.HOME }}/videomark-extension"
+    - shell: pkill chromium-browser
+      ignore_errors: yes
     - shell: pkill chromedriver
       ignore_errors: yes
     - shell: chromedriver --port=8008 &

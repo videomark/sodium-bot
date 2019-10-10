@@ -7,9 +7,9 @@
         minute: "*/5"
         job: >
           ansible-pull
-            --only-if-changed
-            --url git@github.com:webdino/sodium.git
-            sodium-bot/playbook.yml
+          --only-if-changed
+          --url git@github.com:webdino/sodium.git
+          sodium-bot/playbook.yml
     - file:
         state: absent
         path: "{{ ansible_env.HOME }}/videomark-extension"

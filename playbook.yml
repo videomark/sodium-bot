@@ -2,6 +2,11 @@
 - hosts: localhost
   tasks:
     - cron:
+        env: yes
+        # state: absent
+        name: PATH
+        value: "{{ ansible_env.PATH }}"
+    - cron:
         name: ansible-pull
         # state: absent
         minute: "*/5"

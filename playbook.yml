@@ -43,7 +43,7 @@
         name: sodium-bot
         # state: absent
         minute: "*/5"
-        job: |
-          cd -- "{{ ansible_env.PWD }}/sodium-bot"
-          test -f session.json && npm run down
+        job: >
+          cd -- "{{ ansible_env.PWD }}/sodium-bot";
+          test -f session.json && npm run down;
           npm start >>stdout.log 2>>stderr.log

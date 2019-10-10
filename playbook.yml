@@ -39,7 +39,6 @@
         # state: absent
         special_time: reboot
         job: DISPLAY=:0 chromedriver --port=8008
-    - shell: DISPLAY=:0 nohup chromedriver --port=8008 &
     - cron:
         env: yes
         # state: absent
@@ -56,8 +55,9 @@
     - cron:
         name: sodium-bot
         # state: absent
-        minute: "*/5"
+        special_time: reboot
         job: >
           cd -- "{{ ansible_env.PWD }}";
           test -f session.json && npm run down;
           npm start >> "{{ ansible_env.HOME }}"/sodium-bot.log 2>&1
+    - reboot:

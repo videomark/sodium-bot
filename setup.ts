@@ -132,6 +132,31 @@ const build = async (browser: string = "chrome") => {
   return driver;
 };
 
+export const setup = async (
+  browser: string = "chrome",
+  sessionId: string = "sodium"
+) => {
+  let driver;
+  try {
+    driver = await build(browser);
+    if (browser === "android") {
+      logger.info("Settings page is not yet supported.");
+    } else {
+      // NOTE: Wait for warm up.
+      await driver.sleep(10e3);
+      await setSessionId(driver, sessionId);
+      logger.info(`Session ID: ${sessionId}`);
+    }
+    logger.info("Setup complete.");
+  } catch (error) {
+    if (driver != null) {
+      logger.error(`Current URL: ${await driver.getCurrentUrl()}`);
+      driver.quit();
+    }
+    throw error;
+  }
+};
+
 const main = async () => {
   const args = arg({
     "-h": "--help",
@@ -158,28 +183,11 @@ const main = async () => {
   const sessionId =
     args["--session-id"] == null ? SESSION_ID : args["--session-id"];
 
-  let driver;
-  try {
-    driver = await build(browser);
-    if (browser === "android") {
-      logger.info("Settings page is not yet supported.");
-    } else {
-      if (sessionId == null) {
-        throw new Error("SESSION_ID or --session-id=... required.");
-      }
-      // NOTE: Wait for warm up.
-      await driver.sleep(10e3);
-      await setSessionId(driver, sessionId);
-      logger.info(`Session ID: ${sessionId}`);
-    }
-    logger.info("Setup complete.");
-  } catch (error) {
-    if (driver != null) {
-      logger.error(`Current URL: ${await driver.getCurrentUrl()}`);
-      driver.quit();
-    }
-    throw error;
+  if (browser === "chrome" && sessionId == null) {
+    throw new Error("SESSION_ID or --session-id=... required.");
   }
+
+  await setup(browser, sessionId);
 };
 
 if (require.main === module) main();

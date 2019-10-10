@@ -1,9 +1,13 @@
 import * as arg from "arg";
 import { basename } from "path";
+import { job } from "cron";
 import { promise, race, after } from "fluture";
 import { PageController } from "./";
 import { loadSession } from "./utils/session";
 import logger from "./utils/logger";
+import { setup } from "./setup";
+
+const { SESSION_ID, BROWSER } = process.env;
 
 const retry = async (count: number, proc: () => Promise<void>) => {
   for (const i of Array(count).keys()) {
@@ -71,42 +75,65 @@ const play = async (url: URL, seconds: number = 60) => {
 };
 
 const autoPlay = async () => {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const { promises: fs } = await import("fs");
   const { readFile } = fs;
-  const { playlist } = JSON.parse(
+  const { schedule, playlist } = JSON.parse(
     (await readFile("./botconfig.json")).toString()
   );
-  for (const { url, timeout } of playlist) {
-    try {
-      await play(new URL(url), timeout);
-    } catch (error) {
-      logger.error(error);
-    }
-  }
+
+  job(
+    schedule,
+    async () => {
+      for (const { url, timeout } of playlist) {
+        try {
+          await play(new URL(url), timeout);
+        } catch (error) {
+          logger.error(error);
+        }
+      }
+    },
+    undefined,
+    undefined,
+    timeZone
+  ).start();
 };
 
 const main = async () => {
   const args = arg({
     "-h": "--help",
     "--help": Boolean,
+    "--android": Boolean,
+    "--session-id": String,
     "-t": "--timeout",
     "--timeout": Number
   });
-  const help = args["--help"];
-  const timeout = args["--timeout"];
-  const url = args._[0];
 
-  if (help) {
+  if (args["-h"]) {
     console.log(
       [
         `Usage: ${process.argv0} ${basename(__filename)} [options] [url]`,
         "Options:",
         "-h, --help              print command line options",
+        "--android               connect to android device with adb",
+        "--session-id=...        set session id",
         "-t, --timeout=...       set timeout period (seconds)"
       ].join("\n")
     );
     return;
   }
+
+  const browser = args["--android"] ? "android" : BROWSER;
+  const sessionId =
+    args["--session-id"] == null ? SESSION_ID : args["--session-id"];
+  const timeout = args["--timeout"];
+  const url = args._[0];
+
+  if (browser === "chrome" && sessionId == null) {
+    throw new Error("SESSION_ID or --session-id=... required.");
+  }
+
+  await setup(browser, sessionId);
 
   // NOTE: Unhandled promise rejection terminates Node.js process with non-zero exit code.
   process.on("unhandledRejection", event => {

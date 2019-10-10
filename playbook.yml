@@ -57,6 +57,7 @@
         special_time: reboot
         job: >
           while sleep 1; do
+          pkill chromium-browser &
           npm --prefix "{{ ansible_env.PWD }}" start;
           done >> "{{ ansible_env.HOME }}"/sodium-bot.log 2>&1
     - shell: sudo reboot

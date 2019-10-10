@@ -34,6 +34,11 @@
       ignore_errors: yes
     - shell: pkill chromedriver
       ignore_errors: yes
+    - cron:
+        name: chromedriver
+        # state: absent
+        special_time: reboot
+        job: DISPLAY=:0 chromedriver --port=8008
     - shell: DISPLAY=:0 nohup chromedriver --port=8008 &
     - cron:
         env: yes

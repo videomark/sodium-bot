@@ -29,7 +29,7 @@
       ignore_errors: yes
     - shell: pkill chromedriver
       ignore_errors: yes
-    - shell: chromedriver --port=8008 &
+    - shell: nohup chromedriver --port=8008 &
     - cron:
         env: yes
         # state: absent

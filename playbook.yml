@@ -50,4 +50,4 @@
         job: >
           cd -- "{{ ansible_env.PWD }}";
           test -f session.json && npm run down;
-          npm start >>stdout.log 2>>stderr.log
+          npm start >> "{{ ansible_env.HOME }}"/sodium-bot.log 2>&1

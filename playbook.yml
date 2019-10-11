@@ -13,8 +13,8 @@
         job: >
           ansible-pull
           --only-if-changed
-          --url git@github.com:webdino/sodium.git
-          sodium-bot/playbook.yml
+          --url git@github.com:videomark/sodium-bot.git
+          playbook.yml
     - file:
         state: absent
         path: "{{ ansible_env.HOME }}/videomark-extension"

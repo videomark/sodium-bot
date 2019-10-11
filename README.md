@@ -41,8 +41,7 @@ docker-compose down --volumes
 
 ### arm64 環境の場合
 
-あらかじめ Chromium と ChromeDriver をインストールする。
-加えて、VideoMark Extension をダウンロードする。
+あらかじめ Chromium、 ChromeDriver および Ansible をインストールする。
 
 #### Chromium のインストール
 
@@ -69,26 +68,14 @@ sudo chmod +x /usr/local/bin/chromedriver
 rm chromedriver.zip
 ```
 
-#### VideoMark Extension のダウンロード
+#### Ansible のインストール
 
-```sh
-curl \
-    -sL https://sodium-extension.netlify.com/ \
-    -o dist.zip \
-  && mkdir videomark-extension \
-  && unzip -q dist.zip -d videomark-extension \
-  && rm dist.zip
-export VIDEOMARK_EXTENSION_PATH=$PWD/videomark-extension
-```
+[公式のインストールガイド](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#latest-releases-via-pip) に沿ってインストールする。
 
 #### 計測の始め方
 
 ```sh
-chromedriver --port=8080 &
-export SELENIUM_REMOTE_URL=http://localhost:8080
-export SESSION_ID=sodium
-npm ci
-npm start
+ansible-pull -U git@github.com:videomark/sodium-bot.git playbook.yml
 ```
 
 ### Android 端末の場合
@@ -113,6 +100,7 @@ npm start
 
 ホスト:
 
+- ansible 2.8.5
 - node v12.10.0
 - npm v6.11.3
 

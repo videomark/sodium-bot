@@ -8,7 +8,10 @@
 
 ### botconfig.json
 
-デフォルトで読み込まれる再生する動画の一覧 (playlist) を記載した JSON ファイル。
+実行するタイミング (schedule) とデフォルトで読み込まれる再生する動画の一覧 (playlist) を記載した JSON ファイル。
+
+schedule:
+[cron のパターン](https://www.npmjs.com/package/cron#available-cron-patterns)の文字列
 
 playlist:
 次の Video オブジェクトの配列

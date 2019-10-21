@@ -14,7 +14,7 @@
           ansible-pull
           --only-if-changed
           --url git@github.com:videomark/sodium-bot.git
-          playbook.yml
+          playbook.yml >> "{{ ansible_env.HOME }}"/ansible-pull.log 2>&1
     - file:
         state: absent
         path: "{{ ansible_env.HOME }}/videomark-extension"

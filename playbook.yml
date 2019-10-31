@@ -32,13 +32,13 @@
         value: "{{ ansible_env.HOME }}/videomark-extension"
     - cron:
         name: chromedriver
-        state: absent
-        # special_time: reboot
-        # job: >
-        #   while sleep 1; do
-        #   xvfb-run --server-args="-screen 0 1280x1024x24"
-        #   chromedriver --port=8008;
-        #   done
+        # state: absent
+        special_time: reboot
+        job: >
+          while sleep 1; do
+          xvfb-run --server-args="-screen 0 1280x1024x24"
+          chromedriver --port=8008;
+          done
     - cron:
         env: yes
         # state: absent
@@ -54,23 +54,23 @@
         ci: yes
     - cron:
         name: sodium-bot
-        state: absent
-        # special_time: reboot
-        # job: >
-        #   while sleep 1; do
-        #   pkill ^chromium || true;
-        #   rm -rf /tmp/.org.chromium.Chromium.*;
-        #   npm --prefix "{{ ansible_env.PWD }}" start;
-        #   done >> "{{ ansible_env.HOME }}"/sodium-bot.log 2>&1
+        # state: absent
+        special_time: reboot
+        job: >
+          while sleep 1; do
+          pkill ^chromium || true;
+          rm -rf /tmp/.org.chromium.Chromium.*;
+          npm --prefix "{{ ansible_env.PWD }}" start;
+          done >> "{{ ansible_env.HOME }}"/sodium-bot.log 2>&1
     - cron:
         name: autossh
-        state: absent
-        # special_time: reboot
-        # job: >
-        #   while sleep 1; do
-        #   autossh
-        #   -M 0
-        #   -o "ServerAliveInterval 30"
-        #   -NR 10022:localhost:22 tunnel@photo.webdino.org || true;
-        #   done >> "{{ ansible_env.HOME }}"/autossh.log 2>&1
+        # state: absent
+        special_time: reboot
+        job: >
+          while sleep 1; do
+          autossh
+          -M 0
+          -o "ServerAliveInterval 30"
+          -NR 10022:localhost:22 tunnel@photo.webdino.org || true;
+          done >> "{{ ansible_env.HOME }}"/autossh.log 2>&1
     - shell: sudo reboot

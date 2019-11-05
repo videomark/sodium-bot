@@ -71,6 +71,7 @@
           autossh
           -M 0
           -o "ServerAliveInterval 30"
+          -o "AddressFamily inet"
           -NR 10022:localhost:22 tunnel@photo.webdino.org || true;
           done >> "{{ ansible_env.HOME }}"/autossh.log 2>&1
     - shell: sudo reboot

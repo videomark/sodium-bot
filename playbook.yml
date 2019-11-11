@@ -30,13 +30,17 @@
         # state: absent
         name: VIDEOMARK_EXTENSION_PATH
         value: "{{ ansible_env.HOME }}/videomark-extension"
+    - lineinfile:
+        path: "{{ ansible_env.HOME }}/.xsessionrc"
+        # state: absent
+        regexp: "^DISPLAY=:0"
+        line: DISPLAY=:0 xrandr --fb 1280x1024
     - cron:
         name: chromedriver
         # state: absent
         special_time: reboot
         job: >
           while sleep 1; do
-          DISPLAY=:0 xrandr --fb 1280x1024;
           DISPLAY=:0 chromedriver --port=8008;
           done
     - cron:

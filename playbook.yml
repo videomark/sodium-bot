@@ -64,14 +64,14 @@
           done >> "{{ ansible_env.HOME }}"/sodium-bot.log 2>&1
     - cron:
         name: autossh
-        state: absent
-        # special_time: reboot
-        # job: >
-        #   while sleep 1; do
-        #   autossh
-        #   -M 0
-        #   -o "ServerAliveInterval 30"
-        #   -o "ExitOnForwardFailure yes"
-        #   -NTR 10022:localhost:22 tunnel@photo.webdino.org || true;
-        #   done >> "{{ ansible_env.HOME }}"/autossh.log 2>&1
+        # state: absent
+        special_time: reboot
+        job: >
+          while sleep 1; do
+          autossh
+          -M 0
+          -o "ServerAliveInterval 30"
+          -o "ExitOnForwardFailure yes"
+          -NTR 10022:localhost:22 tunnel@photo.webdino.org || true;
+          done >> "{{ ansible_env.HOME }}"/autossh.log 2>&1
     - shell: sudo reboot

@@ -72,6 +72,6 @@
           -M 0
           -o "ServerAliveInterval 30"
           -o "ExitOnForwardFailure yes"
-          -NR 10022:localhost:22 tunnel@photo.webdino.org || true;
+          -NTR 10022:localhost:22 tunnel@photo.webdino.org || true;
           done >> "{{ ansible_env.HOME }}"/autossh.log 2>&1
     - shell: sudo reboot

@@ -36,7 +36,7 @@
         special_time: reboot
         job: >
           while sleep 1; do
-          DISPLAY=:0 xrandr --fb 1280x1024
+          DISPLAY=:0 xrandr --fb 1280x1024;
           DISPLAY=:0 chromedriver --port=8008;
           done
     - cron:

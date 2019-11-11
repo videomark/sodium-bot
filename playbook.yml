@@ -50,6 +50,7 @@
         name: SESSION_ID
         value: sodium
     - npm:
+        path: "."
         ci: yes
     - cron:
         name: sodium-bot

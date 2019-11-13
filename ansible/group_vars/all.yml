@@ -1,0 +1,10 @@
+---
+videomark_extension_url: https://sodium-extension.netlify.com/
+videomark_extension_path: "{{ ansible_env.HOME }}/videomark-extension"
+autossh_tunnel_host: photo.webdino.org
+autossh_tunnel_user: tunnel
+autossh_tunnel_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAeVborfpHVVDW8lPZEaTzJ8puRQzpdBqXholMoz2d9X
+ansible_pull_url: https://github.com/videomark/sodium-bot.git
+ansible_pull_playbook_path: ansible/{{ inventory_hostname }}.yml
+chromedriver_port: 8080
+sodium_bot_module_path: "{{ ansible_env.PWD }}/.."

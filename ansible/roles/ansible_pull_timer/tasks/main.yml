@@ -1,0 +1,16 @@
+---
+- name: Install ansible-pull.service systemd unit file.
+  template:
+    src: ansible-pull.service.j2
+    dest: /etc/systemd/system/ansible-pull.service
+  become: yes
+- name: Install ansible-pull.timer systemd unit file.
+  template:
+    src: ansible-pull.timer.j2
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user/ansible-pull.timer"
+- name: Start ansible-pull.timer.
+  systemd:
+    user: yes
+    state: started
+    name: ansible-pull.timer
+    daemon_reload: yes

@@ -1,0 +1,12 @@
+---
+- name: Download chromedriver.
+  unarchive:
+    remote_src: yes
+    src: https://github.com/electron/electron/releases/download/v6.0.11/chromedriver-v6.0.11-linux-arm64.zip
+    dest: /usr/local/bin
+  become: yes
+- name: Setup chromedriver.
+  file:
+    path: /usr/local/bin/chromedriver
+    mode: +x
+  become: yes

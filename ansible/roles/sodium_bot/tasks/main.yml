@@ -1,0 +1,15 @@
+---
+- name: Install sodium-bot module.
+  npm:
+    path: "{{ sodium_bot_module_path }}"
+    ci: yes
+- name: Install sodium-bot.service systemd unit file.
+  template:
+    src: sodium-bot.service.j2
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user/sodium-bot.service"
+- name: Start sodium-bot.service.
+  systemd:
+    user: yes
+    state: started
+    name: sodium-bot.service
+    daemon_reload: yes

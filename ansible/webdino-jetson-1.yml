@@ -1,0 +1,6 @@
+---
+- hosts: webdino-jetson-1
+  roles:
+    - autossh
+    - ansible_pull_timer
+    - sodium_bot

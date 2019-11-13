@@ -1,0 +1,8 @@
+---
+- name: Install ansible.
+  apt:
+    name: ansible
+    update_cache: yes
+    cache_valid_time: 86400
+  become: yes
+  when: ansible_os_family == "Debian"

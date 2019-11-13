@@ -1,0 +1,6 @@
+---
+- name: Adjust display size.
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.xsessionrc"
+    regexp: '^xrandr\s'
+    line: xrandr --fb 1280x1024

@@ -1,0 +1,49 @@
+---
+- name: Install chromium-browser.
+  apt:
+    name: chromium-browser
+    update_cache: yes
+    cache_valid_time: 86400
+    become: yes
+  when: ansible_distribution == "Ubuntu"
+- name: Install chromium.
+  apt:
+    name: chromium
+    update_cache: yes
+    cache_valid_time: 86400
+    become: yes
+  when: ansible_distribution == "Debian"
+- name: Install chromedriver.
+  apt:
+    name: chromedriver
+    update_cache: yes
+    cache_valid_time: 86400
+    become: yes
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_architecture == "x86_64"
+- name: Install chromedriver.
+  apt:
+    name: chromium-chromedriver
+    update_cache: yes
+    cache_valid_time: 86400
+    become: yes
+  when:
+    - ansible_distribution == "Debian"
+    - ansible_architecture == "x86_64"
+- name: Install chromedriver.
+  import_tasks: chromedriver-debian-aarch64.yml
+  when:
+    - ansible_os_family == "Debian"
+    - ansible_architecture == "aarch64"
+- name: Install chromedriver.service systemd unit file.
+  template:
+    src: chromedriver.service.j2
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user/chromedriver.service"
+  become: yes
+- name: Start chromedriver.service.
+  systemd:
+    user: yes
+    state: started
+    name: chromedriver.service
+    daemon_reload: yes

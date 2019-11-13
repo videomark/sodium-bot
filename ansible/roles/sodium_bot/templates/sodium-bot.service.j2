@@ -1,0 +1,9 @@
+[Service]
+User={{ ansible_user }}
+Environment=SELENIUM_REMOTE_URL=http://localhost:{{ chromedriver_port }}
+Environment=VIDEOMARK_EXTENSION_PATH={{ videomark_extension_path }}
+Environment=SESSION_ID={{ sodium_bot_session_id }}
+ExecStartPre=sh -c "pkill ^chromium; rm -rf /tmp/.org.chromium.Chromium.*"
+ExecStart=npm --prefix {{ sodium_bot_module_path }} start
+Restart=always
+RestartSec=30s

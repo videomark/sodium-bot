@@ -1,0 +1,15 @@
+
+---
+- name: Remove videomark-extension.
+  file:
+    state: absent
+    path: "{{ videomark_extension_path }}"
+- name: Create videomark-extension directory.
+  file:
+    state: directory
+    path: "{{ videomark_extension_path }}"
+- name: Download videomark-extension.
+  unarchive:
+    remote_src: yes
+    src: "{{ videomark_extension_url }}"
+    dest: "{{ videomark_extension_path }}"

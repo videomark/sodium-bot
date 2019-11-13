@@ -1,0 +1,3 @@
+[Service]
+User={{ ansible_user }}
+ExecStart=ansible-pull --connection local --inventory {{ inventory_hostname }}, --only-if-changed --url {{ ansible_pull_url }} {{ ansible_pull_playbook_path }}

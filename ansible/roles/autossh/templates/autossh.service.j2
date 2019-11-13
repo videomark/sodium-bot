@@ -1,5 +1,5 @@
 [Service]
 User={{ ansible_user }}
-ExecStart=autossh -M 0 -o ServerAliveInterval=30 -o ExitOnForwardFailure=yes -NTR {{ autossh_tunnel_port }}:localhost:22 {{ autossh_tunnel_user }}@{{ autossh_tunnel_host }}
+ExecStart=/usr/bin/env autossh -M 0 -o ServerAliveInterval=30 -o ExitOnForwardFailure=yes -NTR {{ autossh_tunnel_port }}:localhost:22 {{ autossh_tunnel_user }}@{{ autossh_tunnel_host }}
 Restart=always
 RestartSec=30s

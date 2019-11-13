@@ -4,3 +4,6 @@
     - autossh
     - ansible_pull_timer
     - sodium_bot
+  tasks:
+    - reboot:
+      become: yes

@@ -42,44 +42,9 @@ docker-compose up -d
 docker-compose down --volumes
 ```
 
-### arm64 環境の場合
+### 自動計測マシンの場合
 
-あらかじめ Chromium、 ChromeDriver および Ansible をインストールする。
-
-#### Chromium のインストール
-
-Ubuntu:
-
-```sh
-sudo apt-get install -y chromium-browser
-```
-
-Debian:
-
-```sh
-sudo apt-get install -y chromium
-```
-
-#### ChromeDriver のインストール
-
-```sh
-curl \
-  -sL https://github.com/electron/electron/releases/download/v6.0.11/chromedriver-v6.0.11-linux-arm64.zip \
-  -o chromedriver.zip
-sudo unzip -q chromedriver.zip -d /usr/local/bin
-sudo chmod +x /usr/local/bin/chromedriver
-rm chromedriver.zip
-```
-
-#### Ansible のインストール
-
-[公式のインストールガイド](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#latest-releases-via-pip) に沿ってインストールする。
-
-#### 計測の始め方
-
-```sh
-ansible-pull -U git@github.com:videomark/sodium-bot.git playbook.yml
-```
+[Ansible による Sodium Bot 構築](ansible/README.md)を参照。
 
 ### Android 端末の場合
 
@@ -98,14 +63,6 @@ npm start
 ## 動作環境
 
 - Docker v19, Docker Compose v1.24 にて動作確認
-
-### arm64 環境
-
-ホスト:
-
-- ansible 2.8.5
-- node v12.10.0
-- npm v6.11.3
 
 ### Android 端末
 

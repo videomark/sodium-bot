@@ -1,8 +1,11 @@
 ---
-- name: Install ansible.
-  apt:
-    name: ansible
-    update_cache: yes
-    cache_valid_time: 86400
-  become: yes
-  when: ansible_os_family == "Debian"
+- name: Install Ansible.
+  import_tasks: ansible-debian.yml
+  when:
+    - ansible_os_family == "Debian"
+    - ansible_architecture == "x86_64"
+- name: Install Ansible.
+  import_tasks: ansible-debian-aarch64.yml
+  when:
+    - ansible_os_family == "Debian"
+    - ansible_architecture == "aarch64"

@@ -1,8 +1,12 @@
 ---
+- name: Setup hostname.
+  hostname:
+    name: "{{ inventory_hostname }}"
+  became: yes
 - name: Install ansible-pull.service systemd unit file.
   template:
     src: ansible-pull.service.j2
-    dest: /etc/systemd/system/ansible-pull.service
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user/ansible-pull.service"
   become: yes
 - name: Install ansible-pull.timer systemd unit file.
   template:

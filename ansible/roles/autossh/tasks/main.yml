@@ -20,6 +20,10 @@
     cache_valid_time: 86400
   become: yes
   when: ansible_os_family == "Debian"
+- name: Create user systemd directory.
+  file:
+    state: directory
+    path: "{{ ansible_env.HOME }}/.config/systemd/user"
 - name: Install autossh.service systemd unit file.
   template:
     src: autossh.service.j2

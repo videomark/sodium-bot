@@ -36,6 +36,10 @@
   when:
     - ansible_os_family == "Debian"
     - ansible_architecture == "aarch64"
+- name: Create user systemd directory.
+  file:
+    state: directory
+    path: "{{ ansible_env.HOME }}/.config/systemd/user"
 - name: Install chromedriver.service systemd unit file.
   template:
     src: chromedriver.service.j2

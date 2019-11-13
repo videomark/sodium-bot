@@ -3,6 +3,10 @@
   hostname:
     name: "{{ inventory_hostname }}"
   become: yes
+- name: Create user systemd directory.
+  file:
+    state: directory
+    path: "{{ ansible_env.HOME }}/.config/systemd/user"
 - name: Install ansible-pull.service systemd unit file.
   template:
     src: ansible-pull.service.j2

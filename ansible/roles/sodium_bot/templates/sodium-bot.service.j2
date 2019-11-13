@@ -3,6 +3,6 @@ Environment=SELENIUM_REMOTE_URL=http://localhost:{{ chromedriver_port }}
 Environment=VIDEOMARK_EXTENSION_PATH={{ videomark_extension_path }}
 Environment=SESSION_ID={{ sodium_bot_session_id }}
 ExecStartPre=/bin/sh -c "pkill ^chromium; rm -rf /tmp/.org.chromium.Chromium.*"
-ExecStart=/usr/bin/env npm --prefix {{ sodium_bot_module_path }} start
+ExecStart=/usr/bin/env npm --prefix {{ sodium_bot_dest_path }} start
 Restart=always
 RestartSec=30s

@@ -1,7 +1,11 @@
 ---
+- name: Clone sodium-bot repo.
+  git:
+    repo: "{{ sodium_bot_repo }}"
+    dest: "{{ sodium_bot_dest_path }}"
 - name: Install sodium-bot module.
   npm:
-    path: "{{ sodium_bot_module_path }}"
+    path: "{{ sodium_bot_dest_path }}"
     ci: yes
 - name: Create user systemd directory.
   file:

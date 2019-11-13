@@ -4,21 +4,21 @@
     name: chromium-browser
     update_cache: yes
     cache_valid_time: 86400
-    become: yes
+  become: yes
   when: ansible_distribution == "Ubuntu"
 - name: Install chromium.
   apt:
     name: chromium
     update_cache: yes
     cache_valid_time: 86400
-    become: yes
+  become: yes
   when: ansible_distribution == "Debian"
 - name: Install chromedriver.
   apt:
     name: chromedriver
     update_cache: yes
     cache_valid_time: 86400
-    become: yes
+  become: yes
   when:
     - ansible_distribution == "Ubuntu"
     - ansible_architecture == "x86_64"
@@ -27,7 +27,7 @@
     name: chromium-chromedriver
     update_cache: yes
     cache_valid_time: 86400
-    become: yes
+  become: yes
   when:
     - ansible_distribution == "Debian"
     - ansible_architecture == "x86_64"

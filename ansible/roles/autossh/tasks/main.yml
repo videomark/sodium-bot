@@ -30,7 +30,7 @@
     dest: "{{ ansible_env.HOME }}/.config/systemd/user/autossh.service"
 - name: Start autossh.service.
   systemd:
-    user: yes
+    scope: user
     state: started
     name: autossh.service
     daemon_reload: yes

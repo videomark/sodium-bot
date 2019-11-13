@@ -47,7 +47,7 @@
   become: yes
 - name: Start chromedriver.service.
   systemd:
-    user: yes
+    scope: user
     state: started
     name: chromedriver.service
     daemon_reload: yes

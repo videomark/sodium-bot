@@ -13,7 +13,7 @@
     dest: "{{ ansible_env.HOME }}/.config/systemd/user/sodium-bot.service"
 - name: Start sodium-bot.service.
   systemd:
-    user: yes
+    scope: user
     state: started
     name: sodium-bot.service
     daemon_reload: yes

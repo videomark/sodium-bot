@@ -1,5 +1,4 @@
 [Service]
-User={{ ansible_user }}
 ExecStart=/usr/bin/env chromedriver --port "{{ chromedriver_port }}"
 Restart=always
 RestartSec=30s

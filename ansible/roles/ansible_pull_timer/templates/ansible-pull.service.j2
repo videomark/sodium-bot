@@ -1,3 +1,2 @@
 [Service]
-User={{ ansible_user }}
 ExecStart=/usr/bin/env ansible-pull --inventory {{ inventory_hostname }}, --url {{ ansible_pull_url }} {{ ansible_pull_playbook_path }}

@@ -21,4 +21,4 @@
     scope: user
     state: started
     name: ansible-pull.timer
-    daemon_reload: yes
+    enabled: yes

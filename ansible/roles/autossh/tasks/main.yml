@@ -33,4 +33,4 @@
     scope: user
     state: started
     name: autossh.service
-    daemon_reload: yes
+    enabled: yes

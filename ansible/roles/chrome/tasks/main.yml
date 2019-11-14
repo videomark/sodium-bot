@@ -50,4 +50,3 @@
     scope: user
     state: started
     name: chromedriver.service
-    daemon_reload: yes

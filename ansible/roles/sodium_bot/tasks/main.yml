@@ -20,4 +20,4 @@
     scope: user
     state: started
     name: sodium-bot.service
-    daemon_reload: yes
+    enabled: yes

@@ -11,12 +11,6 @@
   template:
     src: ansible-pull.service.j2
     dest: "{{ ansible_env.HOME }}/.config/systemd/user/ansible-pull.service"
-- name: Enable ansible-pull.service.
-  systemd:
-    scope: user
-    name: ansible-pull.service
-    enabled: yes
-    daemon_reload: yes
 - name: Install ansible-pull.timer systemd unit file.
   template:
     src: ansible-pull.timer.j2

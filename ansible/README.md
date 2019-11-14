@@ -34,3 +34,11 @@ ansible-playbook -u jetson -i webdino-jetson-1, webdino-jetson-1.yml
 このコマンドを実行すると、webdino-jetson-1.pub が得られる
 
 最後に、autossh のトンネル用ホスト (tunnel@photo.webdino.org) の ~/.ssh/authorized_keys に、得られた webdino-jetson-1.pub の中身を追記
+
+### Jetson Nano を計測用マシンとして追加する際の補足
+
+Jetson Nano Developer Kit の SD カードイメージを書き込み後、初回起動時にいくつか画面上で設定するためのウィンドウが出てくるので適宜設定する必要がある
+
+Jetson Nano Developer Kit の SD カードイメージにはあらかじめ Chromium がインストールされているが、Ansible によってインストールされる ChromeDriver との互換性のないバージョンの場合があるため、適宜 ChromeDriver に合わせてバージョンアップする必要がある
+
+長期間放置する場合、自動セキュリティ更新をするために unattended-upgrades パッケージをインストールし設定しておくのが望ましい

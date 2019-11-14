@@ -1,0 +1,9 @@
+---
+- hosts: webdino-jetson-2
+  roles:
+    - autossh
+    - ansible_pull_timer
+    - sodium_bot
+  tasks:
+    - reboot:
+      become: yes

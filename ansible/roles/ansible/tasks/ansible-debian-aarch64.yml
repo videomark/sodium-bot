@@ -10,6 +10,16 @@
   file:
     state: absent
     path: /tmp/get-pip.py
+- name: Install build tools.
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 86400
+  become: yes
+  with_list:
+    - build-essential
+    - libffi-dev
+    - libssl-dev
 - name: Install Ansible.
   pip:
     name: ansible

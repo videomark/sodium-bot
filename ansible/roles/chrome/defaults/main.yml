@@ -1,3 +1,0 @@
----
-chromedriver_port: "8008"
-selenium_remote_url: http://localhost:{{ chromedriver_port }}

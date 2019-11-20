@@ -1,6 +1,7 @@
 ---
 sodium_bot_repo: https://github.com/videomark/sodium-bot.git
 sodium_bot_dest_path: "{{ ansible_env.HOME }}/sodium-bot"
+sodium_bot_session_id: "{{ inventory_hostname }}"
 videomark_extension_url: https://sodium-extension.netlify.com/
 videomark_extension_path: "{{ ansible_env.HOME }}/videomark-extension"
 autossh_tunnel_host: photo.webdino.org

@@ -8,7 +8,7 @@
 
 まず、Playbook とその設定ファイル (host_vars) を作成
 
-例: webdino-jetson-1.yml, host_vars/webdino-jetson-1.yml
+例: webdino-jetson-1.photo.webdino.org.yml, host_vars/webdino-jetson-1.photo.webdino.org.yml
 
 次に、操作対象のマシンに SSH で接続できる環境の操作者のマシンに Ansible をインストール
 
@@ -18,7 +18,7 @@ SSH 接続設定例:
 
 ```config
 # ~/.ssh/config
-Host webdino-jetson-1
+Host webdino-jetson-1.photo.webdino.org
 Hostname 10.10.10.211
 User jetson
 ```
@@ -28,12 +28,12 @@ User jetson
 例:
 
 ```sh
-ansible-playbook -u jetson -i webdino-jetson-1, webdino-jetson-1.yml
+ansible-playbook -u jetson -i webdino-jetson-1.photo.webdino.org, webdino-jetson-1.photo.webdino.org.yml
 ```
 
-このコマンドを実行すると、webdino-jetson-1.pub が得られる
+このコマンドを実行すると、webdino-jetson-1.photo.webdino.org.pub が得られる
 
-最後に、autossh のトンネル用ホスト (tunnel@photo.webdino.org) の ~/.ssh/authorized_keys に、得られた webdino-jetson-1.pub の中身を追記
+最後に、autossh のトンネル用ホスト (tunnel@photo.webdino.org) の ~/.ssh/authorized_keys に、得られた webdino-jetson-1.photo.webdino.org.pub の中身を追記
 
 ### Jetson Nano を計測用マシンとして追加する際の補足
 

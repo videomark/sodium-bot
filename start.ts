@@ -49,9 +49,6 @@ const play = async (url: URL, seconds: number = 60) => {
       await page.waitForShowStatus(90e3);
       logger.info("Show status.");
       await page.screenshot();
-      await page.waitForShowQuality(30e3);
-      logger.info("Show quality.");
-      await page.screenshot();
     });
   } catch (error) {
     await page.stop();

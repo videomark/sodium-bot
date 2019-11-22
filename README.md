@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/videomark/sodium-bot/workflows/docker/badge.svg)](https://github.com/videomark/sodium-bot/actions)
+
 # Sodium Bot
 
 動画配信サービスの視聴品質の自動計測

@@ -33,13 +33,9 @@ interface Video {
 ### 計測の始め方
 
 ```sh
-docker-compose up -d
-```
-
-### 撤去
-
-```sh
-docker-compose down --volumes
+git clone https://github.com/videomark/sodium-bot.git
+cd sodium-bot
+docker run --rm -it -v "$PWD:/app" --shm-size 256M videomark/sodium-bot:latest start --session-id=sodium
 ```
 
 ### 自動計測マシンの場合
@@ -58,6 +54,18 @@ export SELENIUM_REMOTE_URL=http://localhost:8080
 export BROWSER=android
 npm ci
 npm start
+```
+
+## Docker Hub に公開する方法
+
+[videomark ユーザー](https://hub.docker.com/u/videomark)のみデプロイ可能。
+以下のコマンドを実行すると Docker Hub に公開される。
+
+```sh
+docker login
+export VERSION=latest
+docker-compose build
+docker-compose push
 ```
 
 ## 動作環境

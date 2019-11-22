@@ -7,7 +7,12 @@ import isWelcomePage from "./utils/isWelcomePage";
 import isSettingsPage from "./utils/isSettingsPage";
 import logger from "./utils/logger";
 
-const { VIDEOMARK_EXTENSION_PATH, SESSION_ID, BROWSER } = process.env;
+const {
+  SELENIUM_REMOTE_URL,
+  VIDEOMARK_EXTENSION_PATH,
+  SESSION_ID,
+  BROWSER
+} = process.env;
 
 const waitForContentRendering = async (driver: WebDriver) => {
   await driver.wait((driver: WebDriver) =>
@@ -126,8 +131,11 @@ const build = async (browser: string = "chrome") => {
   }
 
   const driver = new Builder().withCapabilities(capabilities).build();
-  await saveSession(driver);
-  logger.info("Save WebDriver session file.");
+
+  if (SELENIUM_REMOTE_URL) {
+    await saveSession(driver);
+    logger.info("Save WebDriver session file.");
+  }
 
   return driver;
 };
@@ -155,6 +163,8 @@ export const setup = async (
     }
     throw error;
   }
+
+  return driver;
 };
 
 const main = async () => {

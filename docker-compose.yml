@@ -1,24 +1,22 @@
 version: "3"
 services:
   chrome:
+    image: &chrome_image docker.io/videomark/chrome:latest
     build:
       context: chrome
       # args:
       #   extension_url: https://sodium-extension.netlify.com/
-    environment:
-      PORT: "8008"
-    ports:
-      - "8008:8008"
-    shm_size: 256M
-  bot:
-    build: "."
+  app:
+    image: &image docker.io/videomark/sodium-bot:${VERSION}
+    build:
+      context: "."
+      args:
+        from: *chrome_image
+        session_id: *image
     depends_on:
       - chrome
-    environment:
-      SELENIUM_REMOTE_URL: http://chrome:8008
-      VIDEOMARK_EXTENSION_PATH: videomark-extension
-      SESSION_ID: sodium
-      # BROWSER: chrome
-      # DEBUG: "*"
+    # environment:
+    #   DEBUG: "*"
     volumes:
       - ".:/app"
+    shm_size: 256M

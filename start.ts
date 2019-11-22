@@ -2,6 +2,7 @@ import * as arg from "arg";
 import { basename } from "path";
 import { job } from "cron";
 import { promise, race, after } from "fluture";
+import { WebDriver } from "selenium-webdriver";
 import { PageController } from "./";
 import { loadSession } from "./utils/session";
 import logger from "./utils/logger";
@@ -25,10 +26,13 @@ const retry = async (count: number, proc: () => Promise<void>) => {
 /**
  * @param url
  * @param seconds timeout
+ * @param driver WebDriver
  */
-const play = async (url: URL, seconds: number = 60) => {
-  const driver = await loadSession();
-  const page = new PageController({ driver, url });
+const play = async (url: URL, seconds: number = 60, driver?: WebDriver) => {
+  const page = new PageController({
+    driver: driver || (await loadSession()),
+    url
+  });
   const timeoutIn = seconds * 1e3;
   const timeoutAt = Date.now() + timeoutIn;
   const timeout = setTimeout(async () => {
@@ -71,7 +75,10 @@ const play = async (url: URL, seconds: number = 60) => {
   logger.info("Stop.");
 };
 
-const autoPlay = async () => {
+/**
+ * @param driver WebDriver
+ */
+const autoPlay = async (driver?: WebDriver) => {
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const { promises: fs } = await import("fs");
   const { readFile } = fs;
@@ -84,7 +91,7 @@ const autoPlay = async () => {
     async () => {
       for (const { url, timeout } of playlist) {
         try {
-          await play(new URL(url), timeout);
+          await play(new URL(url), timeout, driver);
         } catch (error) {
           logger.error(error);
         }
@@ -130,7 +137,7 @@ const main = async () => {
     throw new Error("SESSION_ID or --session-id=... required.");
   }
 
-  await setup(browser, sessionId);
+  const driver = await setup(browser, sessionId);
 
   // NOTE: Unhandled promise rejection terminates Node.js process with non-zero exit code.
   process.on("unhandledRejection", event => {
@@ -138,9 +145,9 @@ const main = async () => {
   });
 
   if (url == null) {
-    await autoPlay();
+    await autoPlay(driver);
   } else {
-    await play(new URL(url), timeout);
+    await play(new URL(url), timeout, driver);
   }
 };
 

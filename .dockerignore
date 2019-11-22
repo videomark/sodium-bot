@@ -3,3 +3,4 @@
 /node_modules/
 /session.json
 /screenshot.png
+/docker-compose*.yml

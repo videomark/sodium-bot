@@ -27,11 +27,12 @@ RUN \
   && chmod +x /usr/local/bin/chromedriver \
   && rm chromedriver.zip
 ARG extension_url=https://sodium-extension.netlify.com/
+ENV VIDEOMARK_EXTENSION_PATH=/videomark-extension
 RUN \
   curl \
     -sL "${extension_url}" \
     -o dist.zip \
-  && mkdir videomark-extension \
-  && unzip -q dist.zip -d videomark-extension \
+  && mkdir -p "${VIDEOMARK_EXTENSION_PATH}" \
+  && unzip -q dist.zip -d "${VIDEOMARK_EXTENSION_PATH}" \
   && rm dist.zip
 CMD xvfb-run chromedriver --whitelisted-ips="" --port="${PORT:-9515}"

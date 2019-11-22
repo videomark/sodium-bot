@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/videomark/sodium-bot/workflows/docker/badge.svg)](https://github.com/videomark/sodium-bot/actions)
+[![Docker workflow status](https://github.com/videomark/sodium-bot/workflows/Docker/badge.svg)](https://github.com/videomark/sodium-bot/actions?query=workflow%3ADocker)
 
 # Sodium Bot
 

@@ -1,8 +1,10 @@
 name: Docker
 on: push
 jobs:
-  test:
+  docker-push:
     runs-on: ubuntu-latest
+    env:
+      VERSION: latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions/cache@v1

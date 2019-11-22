@@ -32,12 +32,18 @@ interface Video {
 | url        | 測定対象の動画の URL  |
 | timeout    | 測定し続ける時間 (秒) |
 
-### 計測の始め方
+## 計測の始め方
+
+```sh
+docker run --rm -it --shm-size 256M videomark/sodium-bot start --session-id=sodium
+```
+
+または
 
 ```sh
 git clone https://github.com/videomark/sodium-bot.git
 cd sodium-bot
-docker run --rm -it -v "$PWD:/app" --shm-size 256M videomark/sodium-bot:latest start --session-id=sodium
+docker-compose run --rm sodium-bot start --session-id=sodium
 ```
 
 ### 自動計測マシンの場合

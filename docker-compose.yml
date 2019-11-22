@@ -6,8 +6,8 @@ services:
       context: chrome
       # args:
       #   extension_url: https://sodium-extension.netlify.com/
-  app:
-    image: &image docker.io/videomark/sodium-bot:${VERSION}
+  sodium-bot:
+    image: &image docker.io/videomark/sodium-bot:${VERSION:-latest}
     build:
       context: "."
       args:

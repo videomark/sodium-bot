@@ -113,7 +113,7 @@ const main = async () => {
     "--timeout": Number
   });
 
-  if (args["-h"]) {
+  if (args["--help"]) {
     console.log(
       [
         `Usage: ${process.argv0} ${basename(__filename)} [options] [url]`,

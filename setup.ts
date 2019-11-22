@@ -175,7 +175,7 @@ const main = async () => {
     "--session-id": String
   });
 
-  if (args["-h"]) {
+  if (args["--help"]) {
     const { basename } = await import("path");
     console.log(
       [

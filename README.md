@@ -4,34 +4,6 @@
 
 動画配信サービスの視聴品質の自動計測
 
-## 使い方
-
-カレントディレクトリに [botconfig.json](botconfig.json) を配置し、計測を開始する。
-
-### botconfig.json
-
-実行するタイミング (schedule) とデフォルトで読み込まれる再生する動画の一覧 (playlist) を記載した JSON ファイル。
-
-schedule:
-[cron のパターン](https://www.npmjs.com/package/cron#available-cron-patterns)の文字列
-
-playlist:
-次の Video オブジェクトの配列
-
-Video オブジェクト:
-
-```ts
-interface Video {
-  url: string;
-  timeout: number;
-}
-```
-
-| プロパティ | 説明                  |
-| ---------- | --------------------- |
-| url        | 測定対象の動画の URL  |
-| timeout    | 測定し続ける時間 (秒) |
-
 ## 計測の始め方
 
 ```sh
@@ -63,6 +35,48 @@ export BROWSER=android
 npm ci
 npm start
 ```
+
+## その他の使い方
+
+### 特定の動画の再生
+
+デフォルトの設定ファイル (botconfig.json) を用いず、ある特定の動画の計測を行う場合、次のようにコマンドを実行する。
+
+```sh
+docker run --rm -it --shm-size 256M videomark/sodium-bot start --session-id=sodium -t 180 https://www.youtube.com/watch?v=mY6sChi65oU
+```
+
+詳しいコマンドラインオプションのヘルプは次のコマンドの実行結果を参照。
+
+```sh
+docker run --rm videomark/sodium-bot start --help
+```
+
+### 設定ファイル (botconfig.json)
+
+[botconfig.json](botconfig.json) は実行するタイミング (schedule) とデフォルトで読み込まれる再生する動画の一覧 (playlist) を記載した JSON ファイル。
+
+書式は下記の通り。
+
+schedule:
+[cron のパターン](https://www.npmjs.com/package/cron#available-cron-patterns)の文字列
+
+playlist:
+次の Video オブジェクトの配列
+
+Video オブジェクト:
+
+```ts
+interface Video {
+  url: string;
+  timeout: number;
+}
+```
+
+| プロパティ | 説明                  |
+| ---------- | --------------------- |
+| url        | 測定対象の動画の URL  |
+| timeout    | 測定し続ける時間 (秒) |
 
 ## Docker Hub に公開する方法
 

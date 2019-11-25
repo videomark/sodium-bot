@@ -1,0 +1,6 @@
+---
+description:
+  name: Jetson Nano 3号
+  site: WebDINO Japan オフィス
+  line: オフィスの回線
+autossh_tunnel_port: 12223

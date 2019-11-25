@@ -1,0 +1,9 @@
+---
+- hosts: webdino-jetson-3.photo.webdino.org
+  roles:
+    - autossh
+    - ansible_pull_timer
+    - sodium_bot
+  tasks:
+    - reboot:
+      become: yes

@@ -12,14 +12,13 @@
     path: /tmp/get-pip.py
 - name: Install build tools.
   apt:
-    name: "{{ item }}"
+    name:
+      - build-essential
+      - libffi-dev
+      - libssl-dev
     update_cache: yes
     cache_valid_time: 86400
   become: yes
-  with_list:
-    - build-essential
-    - libffi-dev
-    - libssl-dev
 - name: Install Ansible.
   pip:
     name: ansible

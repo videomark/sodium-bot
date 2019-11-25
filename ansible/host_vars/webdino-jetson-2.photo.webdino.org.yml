@@ -1,6 +1,7 @@
 ---
 description:
   name: Jetson Nano 2号
-  site: WebDINO Japan オフィス
-  line: オフィスの回線
+  site: dynamis 実家
+  line:
+  since: 2019-11-22 12:00:00 +09:00
 autossh_tunnel_port: 12222

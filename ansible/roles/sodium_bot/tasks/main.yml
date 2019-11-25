@@ -18,7 +18,7 @@
 - name: Start sodium-bot.service.
   systemd:
     scope: user
-    state: started
+    state: restarted
     name: sodium-bot.service
     enabled: yes
     daemon_reload: yes

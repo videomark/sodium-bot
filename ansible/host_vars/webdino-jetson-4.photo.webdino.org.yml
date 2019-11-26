@@ -1,0 +1,6 @@
+---
+description:
+  name: Jetson Nano 4号
+  site: WebDINO Japan オフィス
+  line: オフィスの回線
+autossh_tunnel_port: 12224

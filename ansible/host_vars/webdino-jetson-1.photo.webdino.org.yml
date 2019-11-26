@@ -3,4 +3,5 @@ description:
   name: Jetson Nano 1号
   site: WebDINO Japan オフィス
   line: オフィスの回線
+  status: 2019-11-26 17:31 JST からメンテ中
 autossh_tunnel_port: 10022

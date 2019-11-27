@@ -1,6 +1,7 @@
 ---
 description:
   name: Jetson Nano 3号
-  site: WebDINO Japan オフィス
-  line: オフィスの回線
+  site: 株式会社アクタスソフトウェア
+  line:
+  since: 2019-11-27 12:00:00 +09:00
 autossh_tunnel_port: 12223

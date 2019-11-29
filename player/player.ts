@@ -44,9 +44,11 @@ export async function waitForPlaying({
 
       if (isCancel()) break;
 
-      const playing = (await Promise.all(
-        elements.map(element => element.getAttribute("paused"))
-      )).some(paused => !paused);
+      const playing = (
+        await Promise.all(
+          elements.map(element => element.getAttribute("paused"))
+        )
+      ).some(paused => !paused);
 
       if (isCancel() || playing) break;
 
@@ -55,11 +57,11 @@ export async function waitForPlaying({
     }
   };
 
-  const wait = Fluture((_, res) => {
+  const wait = Fluture<Error, unknown>((_, res) => {
     waitP().then(res);
     return onCancel;
   });
-  const source = race(rejectAfter(timeout, "Not playing."), wait);
+  const source = race(wait)(rejectAfter(timeout)(new Error("Not playing.")));
   await promise(source);
 }
 
@@ -107,10 +109,12 @@ export async function waitForShowQuality({
     }
   };
 
-  const wait = Fluture((_, res) => {
+  const wait = Fluture<Error, unknown>((_, res) => {
     waitP().then(res);
     return onCancel;
   });
-  const source = race(rejectAfter(timeout, "Quality not found."), wait);
+  const source = race(wait)(
+    rejectAfter(timeout)(new Error("Quality not found."))
+  );
   await promise(source);
 }

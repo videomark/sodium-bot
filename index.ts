@@ -95,14 +95,16 @@ class PageController {
         if (isCancel()) break;
 
         const all = Promise.all.bind(Promise);
-        const videos = (await all(
-          elements.map(element =>
-            all([
-              element.getAttribute("paused"),
-              element.getAttribute("ended")
-            ]).catch(() => null)
+        const videos = (
+          await all(
+            elements.map(element =>
+              all([
+                element.getAttribute("paused"),
+                element.getAttribute("ended")
+              ]).catch(() => null)
+            )
           )
-        )).filter(
+        ).filter(
           (attributes): attributes is NonNullable<typeof attributes> =>
             attributes != null
         );

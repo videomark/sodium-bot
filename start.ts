@@ -61,16 +61,15 @@ const play = async (url: URL, seconds: number = 60, driver?: WebDriver) => {
     clearTimeout(timeout);
   }
 
-  await promise(
-    race(
-      after(Math.max(0, timeoutAt - Date.now()), undefined),
-      page.logger(message => {
-        logger.info(message);
-        page.screenshot();
-      })
-    )
-  );
+  const [left, right] = [
+    after(Math.max(0, timeoutAt - Date.now()))(undefined as unknown),
+    page.logger(message => {
+      logger.info(message);
+      page.screenshot();
+    })
+  ];
 
+  await promise(race(left)(right));
   await page.stop();
   logger.info("Stop.");
 };

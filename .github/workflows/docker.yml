@@ -13,5 +13,9 @@ jobs:
       - name: Set the VERSION
         run: echo "::set-env name=VERSION::${GITHUB_REF##*/}"
         if: github.ref != 'refs/heads/master'
-      - run: docker-compose build
-      - run: docker-compose push
+      - name: Build
+        run: docker-compose build
+      - name: Test
+        run: docker-compose run --rm sodium-bot start --session-id=sodium -t 180 https://www.youtube.com/watch?v=mY6sChi65oU
+      - name: Push
+        run: docker-compose push

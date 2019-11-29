@@ -15,8 +15,8 @@ services:
         session_id: *image
     depends_on:
       - chrome
+    shm_size: 256M
     # environment:
     #   DEBUG: "*"
-    volumes:
-      - ".:/app"
-    shm_size: 256M
+    # volumes:
+    #   - ".:/app"

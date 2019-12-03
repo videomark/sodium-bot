@@ -63,3 +63,19 @@ Jetson Nano Developer Kit の SD カードイメージを書き込み後、初�
 Jetson Nano Developer Kit の SD カードイメージにはあらかじめ Chromium がインストールされているが、Ansible によってインストールされる ChromeDriver との互換性のないバージョンの場合があるため、適宜 ChromeDriver に合わせてバージョンアップする必要がある
 
 長期間放置する場合、自動セキュリティ更新をするために unattended-upgrades パッケージをインストールし設定しておくのが望ましい
+
+## ディレクトリ構成
+
+```
+ansible
+├── README.md     ... このファイル
+├── group_vars
+│   └── all.yml  ... 全体の共通設定
+├── host_vars     ... それぞれのホストの設定
+│   ├── webdino-jetson-1.photo.webdino.org.yml  ... ホストの設定
+│   └── …
+├── roles ... Ansible Roles
+├── webdino-jetson-1.photo.webdino.org.pub  ... 公開鍵
+├── webdino-jetson-1.photo.webdino.org.yml  ... ホストの構成 (Ansible Playbooks)
+…
+```

@@ -33,7 +33,28 @@ ansible-playbook -u jetson -i webdino-jetson-1.photo.webdino.org, webdino-jetson
 
 このコマンドを実行すると、webdino-jetson-1.photo.webdino.org.pub が得られる
 
-最後に、autossh のトンネル用ホスト (tunnel@photo.webdino.org) の ~/.ssh/authorized_keys に、得られた webdino-jetson-1.photo.webdino.org.pub の中身を追記
+最後に、autossh のトンネル用ホスト (デフォルトでは tunnel@photo.webdino.org) の ~/.ssh/authorized_keys に、得られた webdino-jetson-1.photo.webdino.org.pub の中身を追記
+
+### リモートで接続する方法
+
+事前に上述の登録のための設定を済ませた場合、トンネル用ホストからそれぞれの自動計測マシンへ指定したポートで SSH 接続可能。
+それぞれの自動計測マシンのポートは host_vars 以下のディレクトリにあるそれぞれの YAML ファイルの autossh_tunnel_port プロパティを参照。
+
+たとえば手元のマシンからトンネル用のホストを介して webdino-jetson-1.photo.webdino.org に接続する場合、次のような設定を ~/.ssh/config ファイルに追記。
+
+webdino-jetson-1.photo.webdino.org に接続する場合の例:
+
+```config
+Host webdino-jetson-1.photo.webdino.org
+User jetson
+ProxyCommand ssh -W localhost:12221 tunnel@photo.webdino.org
+```
+
+コマンド:
+
+```sh
+ssh webdino-jetson-1.photo.webdino.org
+```
 
 ### Jetson Nano を計測用マシンとして追加する際の補足
 

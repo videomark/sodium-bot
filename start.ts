@@ -11,13 +11,12 @@ import { setup } from "./setup";
 const { SESSION_ID, BROWSER } = process.env;
 
 const retry = async (count: number, proc: () => Promise<void>) => {
-  for (const i of Array(count).keys()) {
+  for (const _ of Array(count).keys()) {
     try {
       await proc();
       return;
     } catch (error) {
       logger.error(error);
-      if (i + 1 === count) break;
     }
   }
   throw new Error(`${count} retries.`);

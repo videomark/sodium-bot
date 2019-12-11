@@ -8,7 +8,7 @@ import { loadSession } from "./utils/session";
 import logger from "./utils/logger";
 import { setup } from "./setup";
 
-const { SESSION_ID, BROWSER } = process.env;
+const { SESSION_ID, BROWSER, ANDROID_DEVICE_SERIAL } = process.env;
 
 const retry = async (count: number, proc: () => Promise<void>) => {
   for (const _ of Array(count).keys()) {
@@ -106,6 +106,7 @@ const main = async () => {
     "-h": "--help",
     "--help": Boolean,
     "--android": Boolean,
+    "--android-device-serial": String,
     "--session-id": String,
     "-t": "--timeout",
     "--timeout": Number
@@ -116,16 +117,24 @@ const main = async () => {
       [
         `Usage: ${process.argv0} ${basename(__filename)} [options] [url]`,
         "Options:",
-        "-h, --help              print command line options",
-        "--android               connect to android device with adb",
-        "--session-id=...        set session id",
-        "-t, --timeout=...       set timeout period (seconds)"
+        "-h, --help                   print command line options",
+        "--android                    connect to android device with adb",
+        "--android-device-serial=...  (optional) device serial number",
+        "--session-id=...             set session id",
+        "-t, --timeout=...            set timeout period (seconds)"
       ].join("\n")
     );
     return;
   }
 
-  const browser = args["--android"] ? "android" : BROWSER;
+  const browser =
+    args["--android"] || args["--android-device-serial"] != null
+      ? "android"
+      : BROWSER;
+  const androidDeviceSerial =
+    args["--android-device-serial"] == null
+      ? ANDROID_DEVICE_SERIAL
+      : args["--android-device-serial"];
   const sessionId =
     args["--session-id"] == null ? SESSION_ID : args["--session-id"];
   const timeout = args["--timeout"];
@@ -135,7 +144,10 @@ const main = async () => {
     throw new Error("SESSION_ID or --session-id=... required.");
   }
 
-  const driver = await setup(browser, sessionId);
+  const driver = await setup(browser, {
+    sessionId,
+    androidDeviceSerial
+  });
 
   // NOTE: Unhandled promise rejection terminates Node.js process with non-zero exit code.
   process.on("unhandledRejection", event => {

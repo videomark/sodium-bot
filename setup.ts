@@ -1,4 +1,3 @@
-import * as arg from "arg";
 import { strict as assert } from "assert";
 import { WebDriver, Builder, By, Capabilities } from "selenium-webdriver";
 import { saveSession } from "./utils/session";
@@ -7,12 +6,7 @@ import isWelcomePage from "./utils/isWelcomePage";
 import isSettingsPage from "./utils/isSettingsPage";
 import logger from "./utils/logger";
 
-const {
-  SELENIUM_REMOTE_URL,
-  VIDEOMARK_EXTENSION_PATH,
-  SESSION_ID,
-  BROWSER
-} = process.env;
+const { SELENIUM_REMOTE_URL, VIDEOMARK_EXTENSION_PATH } = process.env;
 
 const waitForContentRendering = async (driver: WebDriver) => {
   await driver.wait((driver: WebDriver) =>
@@ -73,7 +67,7 @@ const agreeToTerms = async (driver: WebDriver) => {
 };
 
 const setSessionId = async (driver: WebDriver, sessionId: string) => {
-  const url = await agreeToTerms(driver);
+  const url = await driver.getCurrentUrl();
   await driver.get(
     new URL(
       `#/settings?${new URLSearchParams({
@@ -96,7 +90,10 @@ const setSessionId = async (driver: WebDriver, sessionId: string) => {
   );
 };
 
-const build = async (browser: string = "chrome") => {
+const build = async (
+  browser: string,
+  options?: { androidDeviceSerial?: string }
+) => {
   let capabilities: Capabilities | {} = {};
   switch (browser) {
     case "chrome": {
@@ -120,11 +117,13 @@ const build = async (browser: string = "chrome") => {
       break;
     }
     case "android": {
+      const { androidDeviceSerial } = options || {};
       capabilities = Capabilities.chrome().set("goog:chromeOptions", {
         androidExecName: "chrome",
         androidDeviceSocket: "chrome_devtools_remote",
         androidPackage: "org.webdino.videomarkbrowser",
-        androidUseRunningApp: true
+        androidUseRunningApp: true,
+        ...(androidDeviceSerial == null ? {} : { androidDeviceSerial })
       });
       break;
     }
@@ -142,19 +141,32 @@ const build = async (browser: string = "chrome") => {
 
 export const setup = async (
   browser: string = "chrome",
-  sessionId: string = "sodium"
+  options?: { sessionId?: string; androidDeviceSerial?: string }
 ) => {
   let driver;
   try {
-    driver = await build(browser);
-    if (browser === "android") {
-      logger.info("Settings page is not yet supported.");
-    } else {
-      // NOTE: Wait for warm up.
-      await driver.sleep(10e3);
+    driver = await build(browser, options);
+    switch (browser) {
+      case "chrome": {
+        logger.info("Wait for warm up...");
+        await driver.sleep(10e3);
+
+        logger.info("Agree to terms.");
+        await agreeToTerms(driver);
+        break;
+      }
+      case "android": {
+        logger.info("Settings page is not yet supported.");
+        break;
+      }
+    }
+
+    const { sessionId } = options || {};
+    if (sessionId != null) {
       await setSessionId(driver, sessionId);
       logger.info(`Session ID: ${sessionId}`);
     }
+
     logger.info("Setup complete.");
   } catch (error) {
     if (driver != null) {
@@ -166,38 +178,3 @@ export const setup = async (
 
   return driver;
 };
-
-const main = async () => {
-  const args = arg({
-    "-h": "--help",
-    "--help": Boolean,
-    "--android": Boolean,
-    "--session-id": String
-  });
-
-  if (args["--help"]) {
-    const { basename } = await import("path");
-    console.log(
-      [
-        `Usage: ${process.argv0} ${basename(__filename)} [options]`,
-        "Options:",
-        "-h, --help              print command line options",
-        "--android               connect to android device with adb",
-        "--session-id=...        set session id"
-      ].join("\n")
-    );
-    return;
-  }
-
-  const browser = args["--android"] ? "android" : BROWSER;
-  const sessionId =
-    args["--session-id"] == null ? SESSION_ID : args["--session-id"];
-
-  if (browser === "chrome" && sessionId == null) {
-    throw new Error("SESSION_ID or --session-id=... required.");
-  }
-
-  await setup(browser, sessionId);
-};
-
-if (require.main === module) main();

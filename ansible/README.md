@@ -8,7 +8,7 @@
 
 まず、Playbook とその設定ファイル (host_vars) を作成
 
-例: webdino-jetson-1.photo.webdino.org.yml, host_vars/webdino-jetson-1.photo.webdino.org.yml
+例: webdino-jetson-1.cpu.webdino.org.yml, host_vars/webdino-jetson-1.cpu.webdino.org.yml
 
 次に、操作対象のマシンに SSH で接続できる環境の操作者のマシンに Ansible をインストール
 
@@ -18,7 +18,7 @@ SSH 接続設定例:
 
 ```config
 # ~/.ssh/config
-Host webdino-jetson-1.photo.webdino.org
+Host webdino-jetson-1.cpu.webdino.org
 Hostname 10.10.10.211
 User jetson
 ```
@@ -28,32 +28,32 @@ User jetson
 例:
 
 ```sh
-ansible-playbook -u jetson -i webdino-jetson-1.photo.webdino.org, webdino-jetson-1.photo.webdino.org.yml
+ansible-playbook -u jetson -i webdino-jetson-1.cpu.webdino.org, webdino-jetson-1.cpu.webdino.org.yml
 ```
 
-このコマンドを実行すると、webdino-jetson-1.photo.webdino.org.pub が得られる
+このコマンドを実行すると、webdino-jetson-1.cpu.webdino.org.pub が得られる
 
-最後に、autossh のトンネル用ホスト (デフォルトでは tunnel@photo.webdino.org) の ~/.ssh/authorized_keys に、得られた webdino-jetson-1.photo.webdino.org.pub の中身を追記
+最後に、autossh のトンネル用ホスト (デフォルトでは tunnel@cpu.webdino.org) の ~/.ssh/authorized_keys に、得られた webdino-jetson-1.cpu.webdino.org.pub の中身を追記
 
 ### リモートで接続する方法
 
 事前に上述の登録のための設定を済ませた場合、トンネル用ホストからそれぞれの自動計測マシンへ指定したポートで SSH 接続可能。
 それぞれの自動計測マシンのポートは host_vars 以下のディレクトリにあるそれぞれの YAML ファイルの autossh_tunnel_port プロパティを参照。
 
-たとえば手元のマシンからトンネル用のホストを介して webdino-jetson-1.photo.webdino.org に接続する場合、次のような設定を ~/.ssh/config ファイルに追記。
+たとえば手元のマシンからトンネル用のホストを介して webdino-jetson-1.cpu.webdino.org に接続する場合、次のような設定を ~/.ssh/config ファイルに追記。
 
-webdino-jetson-1.photo.webdino.org に接続する場合の例:
+webdino-jetson-1.cpu.webdino.org に接続する場合の例:
 
 ```config
-Host webdino-jetson-1.photo.webdino.org
+Host webdino-jetson-1.cpu.webdino.org
 User jetson
-ProxyCommand ssh -W localhost:12221 tunnel@photo.webdino.org
+ProxyCommand ssh -W localhost:12221 tunnel@cpu.webdino.org
 ```
 
 コマンド:
 
 ```sh
-ssh webdino-jetson-1.photo.webdino.org
+ssh webdino-jetson-1.cpu.webdino.org
 ```
 
 ### Jetson Nano を計測用マシンとして追加する際の補足
@@ -72,10 +72,10 @@ ansible
 ├── group_vars
 │   └── all.yml  ... 全体の共通設定
 ├── host_vars     ... それぞれのホストの設定
-│   ├── webdino-jetson-1.photo.webdino.org.yml  ... ホストの設定
+│   ├── webdino-jetson-1.cpu.webdino.org.yml  ... ホストの設定
 │   └── …
 ├── roles ... Ansible Roles
-├── webdino-jetson-1.photo.webdino.org.pub  ... 公開鍵
-├── webdino-jetson-1.photo.webdino.org.yml  ... ホストの構成 (Ansible Playbooks)
+├── webdino-jetson-1.cpu.webdino.org.pub  ... 公開鍵
+├── webdino-jetson-1.cpu.webdino.org.yml  ... ホストの構成 (Ansible Playbooks)
 …
 ```

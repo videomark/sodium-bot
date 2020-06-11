@@ -1,5 +1,5 @@
 ---
-- hosts: webdino-jetson-1.photo.webdino.org
+- hosts: webdino-jetson-3.cpu.webdino.org
   roles:
     - autossh
     - ansible_pull_timer

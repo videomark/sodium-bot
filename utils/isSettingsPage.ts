@@ -1,14 +1,18 @@
 import isSamePage from "./isSamePage";
 
-const protocol = "chrome-extension:";
-const pathname = "/qoelog/index.html";
-const hash = /^#\/settings\W/;
+const extensionUrl = {
+  protocol: "chrome-extension:",
+  pathname: "/qoelog/index.html",
+  hash: /^#\/settings\W/,
+};
+
+const androidUrl = {
+  protocol: "chrome:",
+  pathname: "/",
+  hash: /^#\/settings\W/,
+}
 
 const isThisPage = (url: URL) =>
-  isSamePage(url, {
-    protocol,
-    pathname,
-    hash
-  });
+  isSamePage(url, extensionUrl) || isSamePage(url, androidUrl);
 
 export default isThisPage;

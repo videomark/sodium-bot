@@ -29,11 +29,11 @@ USB デバッグを有効化した後、ホスト側のパソコンと接続す�
 
 ```sh
 adb start-server
-CHROMEDRIVER_VERSION=70.0.3538.97 npx --ignore-existing chromedriver --port=8080 &
+CHROMEDRIVER_VERSION=81.0.4044.138 npx --ignore-existing chromedriver --port=8080 &
 export SELENIUM_REMOTE_URL=http://localhost:8080
 export BROWSER=android
 npm ci
-npm start
+npm start -- --session-id=sodium
 ```
 
 ## その他の使い方
@@ -99,9 +99,9 @@ docker-compose push
 ホスト:
 
 - adb v1.0.39
-- node v12.10.0
-- npm, npx v6.11.3
+- node v14.4.0
+- npm, npx v6.14.5
 
 クライアント:
 
-- VideoMark Browser v70.0.3538.124-7
+- VideoMark Browser v81.0.4044.138-9

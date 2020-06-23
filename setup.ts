@@ -156,7 +156,7 @@ export const setup = async (
         break;
       }
       case "android": {
-        logger.info("Settings page is not yet supported.");
+        await driver.get("chrome://videomark/")
         break;
       }
     }

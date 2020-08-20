@@ -1,10 +1,21 @@
 name: build
-on:
-  push:
-    branches-ignore: [master]
+on: push
 jobs:
-  main:
+  lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: npm-
+      - run: npm ci
+      - run: npm run lint
+  main:
+    needs: lint
+    if: github.ref != 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
       - run: docker-compose build

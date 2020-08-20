@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
+    "noEmit": true,
     "module": "commonjs",
     "target": "esnext",
     "strict": true,
-    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true

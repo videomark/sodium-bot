@@ -1,9 +1,9 @@
 ARG from=docker.io/videomark/chrome:latest
 FROM ${from}
 
-# Install Node.js v12.
+# Install Node.js v14.
 RUN \
-  curl -sL https://deb.nodesource.com/setup_12.x \
+  curl -sL https://deb.nodesource.com/setup_14.x \
     | bash - \
   && apt-get install -qq nodejs \
   && rm -r /var/lib/apt/lists

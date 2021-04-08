@@ -9,7 +9,7 @@
     "@types/debug": "~4",
     "@types/node": "~14",
     "@types/selenium-webdriver": "~4",
-    "arg": "~4",
+    "arg": "~5.0.0",
     "cron": "~1",
     "debug": "~4",
     "fluture": "~12",

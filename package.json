@@ -15,7 +15,7 @@
     "fluture": "~12",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.0"
+    "typescript": "^4.0.0"
   },
   "scripts": {
     "setup": "ts-node setup.ts",

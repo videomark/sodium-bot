@@ -2,6 +2,6 @@
 description:
   name: Jetson Nano 3号
   site: 株式会社アクタスソフトウェア
-  line:
-  since: 2019-11-27 12:00:00 +09:00
+  line: 住居の回線
+  since: 2021-04-12 21:55:00 +09:00
 autossh_tunnel_port: 12223

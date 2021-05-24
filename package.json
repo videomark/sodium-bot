@@ -14,7 +14,7 @@
     "debug": "~4",
     "fluture": "~12",
     "selenium-webdriver": "^4.0.0-alpha.7",
-    "ts-node": "^8.10.2",
+    "ts-node": "^10.0.0",
     "typescript": "^3.9.0"
   },
   "scripts": {

@@ -7,15 +7,15 @@
   "dependencies": {
     "@types/cron": "~1",
     "@types/debug": "~4",
-    "@types/node": "~14",
+    "@types/node": "~16",
     "@types/selenium-webdriver": "~4",
-    "arg": "~4",
+    "arg": "~5",
     "cron": "~1",
     "debug": "~4",
-    "fluture": "~12",
-    "selenium-webdriver": "^4.0.0-alpha.7",
-    "ts-node": "^8.10.2",
-    "typescript": "^3.9.0"
+    "fluture": "~14",
+    "selenium-webdriver": "^4.0.0",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2"
   },
   "scripts": {
     "setup": "ts-node setup.ts",

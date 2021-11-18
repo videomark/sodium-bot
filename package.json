@@ -18,9 +18,9 @@
     "typescript": "^4.5.2"
   },
   "scripts": {
-    "setup": "ts-node setup.ts",
-    "start": "ts-node start.ts",
-    "stop": "ts-node down.ts",
-    "down": "ts-node down.ts"
+    "setup": "ts-node --transpile-only setup.ts",
+    "start": "ts-node --transpile-only start.ts",
+    "stop": "ts-node --transpile-only down.ts",
+    "down": "ts-node --transpile-only down.ts"
   }
 }

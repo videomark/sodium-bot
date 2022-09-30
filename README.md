@@ -7,7 +7,7 @@
 ## 計測の始め方
 
 ```sh
-docker run --rm -it --shm-size 256M videomark/sodium-bot start --session-id=sodium
+docker run --rm -it --ipc=host videomark/sodium-bot start --session-id=sodium
 ```
 
 または
@@ -43,7 +43,7 @@ npm start -- --session-id=sodium
 デフォルトの設定ファイル (botconfig.json) を用いず、ある特定の動画の計測を行う場合、次のようにコマンドを実行する。
 
 ```sh
-docker run --rm -it --shm-size 256M videomark/sodium-bot start --session-id=sodium -t 180 https://www.youtube.com/watch?v=mY6sChi65oU
+docker run --rm -it --ipc=host videomark/sodium-bot start --session-id=sodium -t 180 https://www.youtube.com/watch?v=mY6sChi65oU
 ```
 
 詳しいコマンドラインオプションのヘルプは次のコマンドの実行結果を参照。

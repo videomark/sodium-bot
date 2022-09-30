@@ -14,7 +14,7 @@ services:
         session_id: *image
     depends_on:
       - chrome
-    shm_size: 256M
+    ipc: host
     # environment:
     #   DEBUG: "*"
     # volumes:

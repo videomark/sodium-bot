@@ -15,7 +15,7 @@ docker run --rm -it --shm-size 256M videomark/sodium-bot start --session-id=sodi
 ```sh
 git clone https://github.com/videomark/sodium-bot.git
 cd sodium-bot
-docker-compose run --rm sodium-bot start --session-id=sodium
+docker compose run --rm sodium-bot start --session-id=sodium
 ```
 
 ### 自動計測マシンの場合
@@ -86,8 +86,8 @@ interface Video {
 ```sh
 docker login
 export VERSION=latest
-docker-compose build
-docker-compose push
+docker compose build
+docker compose push
 ```
 
 ## 動作環境

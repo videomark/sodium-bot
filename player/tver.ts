@@ -1,10 +1,9 @@
-import { By } from "selenium-webdriver";
-import { Driver } from "selenium-webdriver/chrome";
+import { By, WebDriver } from "selenium-webdriver";
 import * as player from "./player";
 
 const linuxUserAgentRegExp = /X11; Linux (x86_64|aarch64)/;
 
-async function replaceUserAgent(driver: Driver): Promise<player.StopHandler> {
+async function replaceUserAgent(driver: WebDriver): Promise<player.StopHandler> {
   const userAgent = await driver.executeScript(
     "return window.navigator.userAgent"
   );

@@ -92,7 +92,7 @@ docker-compose push
 
 ## 動作環境
 
-- Docker v19, Docker Compose v1.24 にて動作確認
+- Docker v20 にて動作確認
 
 ### Android 端末
 

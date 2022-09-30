@@ -1,4 +1,3 @@
-version: "3"
 services:
   chrome:
     image: &chrome_image docker.io/videomark/chrome:latest
@@ -15,7 +14,7 @@ services:
         session_id: *image
     depends_on:
       - chrome
-    shm_size: 256M
+    ipc: host
     # environment:
     #   DEBUG: "*"
     # volumes:

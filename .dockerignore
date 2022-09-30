@@ -2,6 +2,6 @@
 /ansible/
 /chrome/
 /node_modules/
-/session.json
+/compose.yml
 /screenshot.png
-/docker-compose*.yml
+/session.json

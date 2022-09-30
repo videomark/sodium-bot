@@ -7,7 +7,7 @@
 ## 計測の始め方
 
 ```sh
-docker run --rm -it --shm-size 256M videomark/sodium-bot start --session-id=sodium
+docker run --rm -it --ipc=host videomark/sodium-bot start --session-id=sodium
 ```
 
 または
@@ -15,7 +15,7 @@ docker run --rm -it --shm-size 256M videomark/sodium-bot start --session-id=sodi
 ```sh
 git clone https://github.com/videomark/sodium-bot.git
 cd sodium-bot
-docker-compose run --rm sodium-bot start --session-id=sodium
+docker compose run --rm sodium-bot start --session-id=sodium
 ```
 
 ### 自動計測マシンの場合
@@ -43,7 +43,7 @@ npm start -- --session-id=sodium
 デフォルトの設定ファイル (botconfig.json) を用いず、ある特定の動画の計測を行う場合、次のようにコマンドを実行する。
 
 ```sh
-docker run --rm -it --shm-size 256M videomark/sodium-bot start --session-id=sodium -t 180 https://www.youtube.com/watch?v=mY6sChi65oU
+docker run --rm -it --ipc=host videomark/sodium-bot start --session-id=sodium -t 180 https://www.youtube.com/watch?v=mY6sChi65oU
 ```
 
 詳しいコマンドラインオプションのヘルプは次のコマンドの実行結果を参照。
@@ -86,13 +86,13 @@ interface Video {
 ```sh
 docker login
 export VERSION=latest
-docker-compose build
-docker-compose push
+docker compose build
+docker compose push
 ```
 
 ## 動作環境
 
-- Docker v19, Docker Compose v1.24 にて動作確認
+- Docker v20 にて動作確認
 
 ### Android 端末
 

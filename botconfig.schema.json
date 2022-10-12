@@ -23,7 +23,7 @@
           },
           "timeout": {
             "title": "測定し続ける時間 (秒)",
-            "type": "string"
+            "type": "integer"
           }
         },
         "additionalProperties": false

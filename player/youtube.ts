@@ -14,4 +14,10 @@ export async function play({
     .findElement(By.css("button.ytp-ad-skip-button"))
     .click()
     .catch(() => {});
+
+  // Full-screen
+  await driver
+    .findElement(By.css("html"))
+    .sendKeys("f")
+    .catch(() => {});
 }

@@ -149,6 +149,7 @@ export const setup = async (
     switch (browser) {
       case "chrome": {
         logger.info("Wait for warm up...");
+        await driver.manage().window().maximize();
         await driver.sleep(10e3);
 
         logger.info("Agree to terms.");

@@ -15,5 +15,5 @@ RUN npm ci
 COPY . .
 ARG session_id=sodium
 ENV SESSION_ID=${session_id}
-ENTRYPOINT ["/bin/sh","-c","xvfb-run npm run -- \"$@\"",""]
+ENTRYPOINT ["/bin/sh", "-c", "xvfb-run --server-args='-screen 0 1920x1080x24' npm run -- \"$@\"", ""]
 CMD ["start"]

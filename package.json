@@ -2,7 +2,7 @@
   "name": "sodium-bot",
   "version": "1.3.0",
   "private": true,
-  "main": "index.js",
+  "main": "index.ts",
   "license": "MIT",
   "dependencies": {
     "@types/cron": "^2.0.0",

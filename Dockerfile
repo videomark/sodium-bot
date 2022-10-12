@@ -4,7 +4,7 @@ FROM ${from}
 # Install Node.js LTS.
 RUN \
   curl -sL https://deb.nodesource.com/setup_lts.x \
-    | bash - \
+  | bash - \
   && apt-get install -qq nodejs \
   && rm -r /var/lib/apt/lists
 

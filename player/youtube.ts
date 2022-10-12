@@ -3,7 +3,7 @@ import * as player from "./player";
 
 export async function play({
   driver,
-  url
+  url,
 }: player.Options): ReturnType<typeof player.play> {
   await driver.get(url.toString());
   await driver

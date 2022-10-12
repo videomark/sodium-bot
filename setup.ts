@@ -26,7 +26,7 @@ const switchToTermsPage = async (driver: WebDriver) => {
     await driver.switchTo().window(windowName);
     urls.push({
       windowName,
-      url: new URL(await driver.getCurrentUrl())
+      url: new URL(await driver.getCurrentUrl()),
     });
   }
   const terms = urls.find(({ url }) => isTermsPage(url));
@@ -39,7 +39,7 @@ const switchToTermsPage = async (driver: WebDriver) => {
 const closeOthers = async (driver: WebDriver) => {
   const current = await driver.getWindowHandle();
   const others = (await driver.getAllWindowHandles()).filter(
-    other => other !== current
+    (other) => other !== current
   );
 
   for (const other of others) {
@@ -71,7 +71,7 @@ const setSessionId = async (driver: WebDriver, sessionId: string) => {
   await driver.get(
     new URL(
       `#/settings?${new URLSearchParams({
-        session_id: sessionId
+        session_id: sessionId,
       })}`,
       url
     ).toString()
@@ -105,14 +105,14 @@ const build = async (
           "--no-sandbox",
           `--load-extension=${VIDEOMARK_EXTENSION_PATH}`,
           // NOTE: for Paravi.
-          "--autoplay-policy=no-user-gesture-required"
+          "--autoplay-policy=no-user-gesture-required",
         ],
         excludeSwitches: [
           // NOTE: for Paravi.
           "--disable-background-networking",
           // NOTE: for Paravi.
-          "--disable-default-apps"
-        ]
+          "--disable-default-apps",
+        ],
       });
       break;
     }
@@ -123,7 +123,7 @@ const build = async (
         androidDeviceSocket: "chrome_devtools_remote",
         androidPackage: "org.webdino.videomarkbrowser",
         androidUseRunningApp: true,
-        ...(androidDeviceSerial == null ? {} : { androidDeviceSerial })
+        ...(androidDeviceSerial == null ? {} : { androidDeviceSerial }),
       });
       break;
     }
@@ -149,6 +149,7 @@ export const setup = async (
     switch (browser) {
       case "chrome": {
         logger.info("Wait for warm up...");
+        await driver.manage().window().maximize();
         await driver.sleep(10e3);
 
         logger.info("Agree to terms.");
@@ -156,7 +157,7 @@ export const setup = async (
         break;
       }
       case "android": {
-        await driver.get("chrome://videomark/")
+        await driver.get("chrome://videomark/");
         break;
       }
     }

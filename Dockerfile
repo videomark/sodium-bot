@@ -5,15 +5,33 @@ FROM ${from}
 RUN \
   curl -sL https://deb.nodesource.com/setup_lts.x \
   | bash - \
-  && apt-get install -qq nodejs \
+  && apt-get install -y --no-install-recommends nodejs \
   && rm -r /var/lib/apt/lists
+
+# Setup Desktop.
+ARG DEBIAN_FRONTEND=noninteractive
+ARG TZ=Asia/Tokyo
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  jwm \
+  novnc \
+  supervisor \
+  x11vnc \
+  xterm \
+  && rm -r /var/lib/apt/lists \
+  && ln -s vnc.html /usr/share/novnc/index.html
 
 # Setup Sodium Bot.
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-ARG session_id=sodium
-ENV SESSION_ID=${session_id}
-ENTRYPOINT ["/bin/sh", "-c", "xvfb-run --server-args='-screen 0 1920x1080x24' npm run -- \"$@\"", ""]
-CMD ["start"]
+
+# Setup Entrypoint.
+COPY ./docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+ENV DISPLAY=:0
+ENV SESSION_ID=sodium
+EXPOSE 8080
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+CMD ["supervisord"]

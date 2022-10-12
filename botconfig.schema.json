@@ -1,0 +1,35 @@
+{
+  "$id": "https://raw.githubusercontent.com/videomark/sodium-bot/master/botconfig.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Sodium Bot Configuration Schema",
+  "description": "Sodium Bot Configuration Schema",
+  "type": "object",
+  "required": ["schedule", "playlist"],
+  "properties": {
+    "schedule": {
+      "title": "実行するタイミング",
+      "description": "https://www.npmjs.com/package/cron#available-cron-patterns",
+      "type": "string"
+    },
+    "playlist": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["url", "timeout"],
+        "properties": {
+          "url": {
+            "title": "測定対象の動画の URL",
+            "type": "string"
+          },
+          "timeout": {
+            "title": "測定し続ける時間 (秒)",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

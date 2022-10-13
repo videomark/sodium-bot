@@ -5,16 +5,18 @@ services:
       context: chrome
       # args:
       #   extension_url: https://sodium-extension.netlify.com/
+    init: true
   sodium-bot:
-    image: &image docker.io/videomark/sodium-bot:${VERSION:-latest}
+    image: docker.io/videomark/sodium-bot:${VERSION:-latest}
     build:
       context: "."
       args:
         from: *chrome_image
-        session_id: *image
     depends_on:
       - chrome
     ipc: host
+    # ports:
+    #   - "8080:8080"
     # environment:
     #   DEBUG: "*"
     # volumes:

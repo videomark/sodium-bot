@@ -12,6 +12,7 @@
     "arg": "^5.0.2",
     "cron": "^2.1.0",
     "debug": "^4.3.4",
+    "dotenv": "^16.0.3",
     "fluture": "^14.0.0",
     "selenium-webdriver": "^4.5.0",
     "ts-node": "^10.9.1",

@@ -30,7 +30,7 @@ const retry = async (count: number, proc: () => Promise<void>) => {
 const play = async (url: URL, seconds: number = 60, driver?: WebDriver) => {
   const page = new PageController({
     driver: driver || (await loadSession()),
-    url
+    url,
   });
   const timeoutIn = seconds * 1e3;
   const timeoutAt = Date.now() + timeoutIn;
@@ -46,10 +46,10 @@ const play = async (url: URL, seconds: number = 60, driver?: WebDriver) => {
       await page.screenshot();
       await page.play();
       await page.screenshot();
-      await page.waitForPlaying(10e3);
+      await page.waitForPlaying(30_000);
       logger.info("Playing.");
       await page.screenshot();
-      await page.waitForShowStatus(90e3);
+      await page.waitForShowStatus(90_000);
       logger.info("Show status.");
       await page.screenshot();
     });
@@ -62,10 +62,10 @@ const play = async (url: URL, seconds: number = 60, driver?: WebDriver) => {
 
   const [left, right] = [
     after(Math.max(0, timeoutAt - Date.now()))(undefined as unknown),
-    page.logger(message => {
+    page.logger((message) => {
       logger.info(message);
       page.screenshot();
-    })
+    }),
   ];
 
   await promise(race(left)(right));
@@ -109,7 +109,7 @@ const main = async () => {
     "--android-device-serial": String,
     "--session-id": String,
     "-t": "--timeout",
-    "--timeout": Number
+    "--timeout": Number,
   });
 
   if (args["--help"]) {
@@ -121,7 +121,7 @@ const main = async () => {
         "--android                    connect to android device with adb",
         "--android-device-serial=...  (optional) device serial number",
         "--session-id=...             set session id",
-        "-t, --timeout=...            set timeout period (seconds)"
+        "-t, --timeout=...            set timeout period (seconds)",
       ].join("\n")
     );
     return;
@@ -146,11 +146,11 @@ const main = async () => {
 
   const driver = await setup(browser, {
     sessionId,
-    androidDeviceSerial
+    androidDeviceSerial,
   });
 
   // NOTE: Unhandled promise rejection terminates Node.js process with non-zero exit code.
-  process.on("unhandledRejection", event => {
+  process.on("unhandledRejection", (event) => {
     throw event;
   });
 

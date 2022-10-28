@@ -5,6 +5,7 @@ import { play as playYouTube } from "./player/youtube";
 import { play as playParavi } from "./player/paravi";
 import { play as playTVer } from "./player/tver";
 import { isNetflixPage, playNetflix } from "./player/netflix";
+import { isAbemaPage, playAbema } from "./player/abema";
 import isYouTubePage from "./utils/isYouTubePage";
 import isParaviPage from "./utils/isParaviPage";
 import isTVerPage from "./utils/isTVerPage";
@@ -15,6 +16,7 @@ const players = [
   { supported: isParaviPage, play: playParavi },
   { supported: isTVerPage, play: playTVer },
   { supported: isNetflixPage, play: playNetflix },
+  { supported: isAbemaPage, play: playAbema },
 ] as const;
 
 class PageController {

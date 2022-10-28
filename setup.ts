@@ -5,8 +5,18 @@ import isTermsPage from "./utils/isTermsPage";
 import isWelcomePage from "./utils/isWelcomePage";
 import isSettingsPage from "./utils/isSettingsPage";
 import logger from "./utils/logger";
+import { setupNetflix } from "./player/netflix";
 
-const { SELENIUM_REMOTE_URL, VIDEOMARK_EXTENSION_PATH } = process.env;
+require("dotenv").config();
+
+const {
+  SELENIUM_REMOTE_URL,
+  VIDEOMARK_EXTENSION_PATH,
+  NETFLIX_USER,
+  NETFLIX_PASSWORD,
+} = process.env;
+
+const enabledNetflix = Boolean(NETFLIX_USER);
 
 const waitForContentRendering = async (driver: WebDriver) => {
   await driver.wait((driver: WebDriver) =>
@@ -154,6 +164,14 @@ export const setup = async (
 
         logger.info("Agree to terms.");
         await agreeToTerms(driver);
+
+        if (enabledNetflix) {
+          logger.info("Login to Netflix.");
+          await setupNetflix(driver, {
+            user: NETFLIX_USER ?? "",
+            password: NETFLIX_PASSWORD ?? "",
+          });
+        }
         break;
       }
       case "android": {

@@ -4,10 +4,18 @@ import * as player from "./player/player";
 import { play as playYouTube } from "./player/youtube";
 import { play as playParavi } from "./player/paravi";
 import { play as playTVer } from "./player/tver";
+import { isNetflixPage, playNetflix } from "./player/netflix";
 import isYouTubePage from "./utils/isYouTubePage";
 import isParaviPage from "./utils/isParaviPage";
 import isTVerPage from "./utils/isTVerPage";
 import { screenshot } from "./utils/screenshot";
+
+const players = [
+  { supported: isYouTubePage, play: playYouTube },
+  { supported: isParaviPage, play: playParavi },
+  { supported: isTVerPage, play: playTVer },
+  { supported: isNetflixPage, play: playNetflix },
+] as const;
 
 class PageController {
   driver: WebDriver;
@@ -15,7 +23,7 @@ class PageController {
   stopHandler?: player.StopHandler;
 
   constructor({ driver, url }: { driver: WebDriver; url: URL }) {
-    if (!isYouTubePage(url) && !isParaviPage(url) && !isTVerPage(url)) {
+    if (!players.some(({ supported }) => supported(url))) {
       throw new Error("Not supported URL.");
     }
     this.driver = driver;
@@ -25,18 +33,13 @@ class PageController {
   async play() {
     const { driver, url } = this;
 
-    if (isYouTubePage(url)) {
-      this.stopHandler = await playYouTube({ driver, url });
-      return;
+    for (const player of players) {
+      if (player.supported(url)) {
+        this.stopHandler = await player.play({ driver, url });
+        return;
+      }
     }
-    if (isParaviPage(url)) {
-      this.stopHandler = await playParavi({ driver, url });
-      return;
-    }
-    if (isTVerPage(url)) {
-      this.stopHandler = await playTVer({ driver, url });
-      return;
-    }
+    throw new Error("Not supported player.");
   }
 
   async stop() {
@@ -45,7 +48,7 @@ class PageController {
     await player.stop({
       handler: stopHandler,
       driver,
-      url: "about:blank"
+      url: "about:blank",
     });
   }
 
@@ -84,7 +87,7 @@ class PageController {
     let length = {
       videos: NaN,
       playing: NaN,
-      ended: NaN
+      ended: NaN,
     };
 
     const waitP = async () => {
@@ -97,10 +100,10 @@ class PageController {
         const all = Promise.all.bind(Promise);
         const videos = (
           await all(
-            elements.map(element =>
+            elements.map((element) =>
               all([
                 element.getAttribute("paused"),
-                element.getAttribute("ended")
+                element.getAttribute("ended"),
               ]).catch(() => null)
             )
           )
@@ -130,7 +133,7 @@ class PageController {
         length = {
           videos: videos.length,
           playing,
-          ended
+          ended,
         };
 
         // NOTE: Interval time.

@@ -164,14 +164,6 @@ export const setup = async (
 
         logger.info("Agree to terms.");
         await agreeToTerms(driver);
-
-        if (enabledNetflix) {
-          logger.info("Login to Netflix.");
-          await setupNetflix(driver, {
-            user: NETFLIX_USER ?? "",
-            password: NETFLIX_PASSWORD ?? "",
-          });
-        }
         break;
       }
       case "android": {
@@ -184,6 +176,14 @@ export const setup = async (
     if (sessionId != null) {
       await setSessionId(driver, sessionId);
       logger.info(`Session ID: ${sessionId}`);
+    }
+
+    if (enabledNetflix) {
+      logger.info("Login to Netflix.");
+      await setupNetflix(driver, {
+        user: NETFLIX_USER ?? "",
+        password: NETFLIX_PASSWORD ?? "",
+      });
     }
 
     logger.info("Setup complete.");

@@ -1,6 +1,6 @@
 services:
   chrome:
-    image: &chrome_image docker.io/videomark/chrome:latest
+    image: &chrome_image docker.io/videomark/chrome:${VERSION:-latest}
     build:
       context: chrome
       # args:

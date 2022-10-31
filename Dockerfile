@@ -3,7 +3,7 @@ FROM ${from}
 
 # Install Node.js LTS.
 RUN \
-  curl -sL https://deb.nodesource.com/setup_lts.x \
+  curl -sL https://deb.nodesource.com/setup_18.x \
   | bash - \
   && apt-get install -y --no-install-recommends nodejs \
   && rm -r /var/lib/apt/lists

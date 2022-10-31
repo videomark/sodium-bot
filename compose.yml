@@ -12,8 +12,6 @@ services:
       context: "."
       args:
         from: *chrome_image
-    depends_on:
-      - chrome
     ipc: host
     # ports:
     #   - "8080:8080"

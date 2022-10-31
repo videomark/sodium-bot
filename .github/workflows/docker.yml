@@ -14,7 +14,9 @@ jobs:
         run: echo "VERSION=${GITHUB_REF##*/}" >> "${GITHUB_ENV}"
         if: github.ref != 'refs/heads/master'
       - name: Build
-        run: docker compose build
+        run: |
+          docker compose build chrome
+          docker compose build sodium-bot
       - name: Test
         run: docker compose run --rm sodium-bot start --session-id=sodium -t 180 https://www.youtube.com/watch?v=mY6sChi65oU
       - name: Push

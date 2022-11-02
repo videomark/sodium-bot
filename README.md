@@ -13,7 +13,7 @@ docker run --rm -it --ipc=host videomark/sodium-bot start --session-id=sodium
 または
 
 ```sh
-git clone https://github.com/videomark/sodium-bot.git
+git clone --recursive https://github.com/videomark/sodium-bot.git
 cd sodium-bot
 docker compose run --rm sodium-bot start --session-id=sodium
 ```

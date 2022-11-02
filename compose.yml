@@ -3,8 +3,8 @@ services:
     image: &chrome_image docker.io/videomark/chrome:${VERSION:-latest}
     build:
       context: chrome
-      # args:
-      #   extension_url: https://sodium-extension.netlify.com/
+      args:
+        extension_url: https://jwplayer--sodium-extension.netlify.com/
     init: true
   sodium-bot:
     image: docker.io/videomark/sodium-bot:${VERSION:-latest}

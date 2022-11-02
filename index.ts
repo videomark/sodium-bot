@@ -6,6 +6,7 @@ import { play as playParavi } from "./player/paravi";
 import { play as playTVer } from "./player/tver";
 import { isNetflixPage, playNetflix } from "./player/netflix";
 import { isAbemaPage, playAbema } from "./player/abema";
+import { playJWPlayer } from "./player/jwplayer";
 import isYouTubePage from "./utils/isYouTubePage";
 import isParaviPage from "./utils/isParaviPage";
 import isTVerPage from "./utils/isTVerPage";
@@ -25,9 +26,6 @@ class PageController {
   stopHandler?: player.StopHandler;
 
   constructor({ driver, url }: { driver: WebDriver; url: URL }) {
-    if (!players.some(({ supported }) => supported(url))) {
-      throw new Error("Not supported URL.");
-    }
     this.driver = driver;
     this.url = url;
   }
@@ -41,7 +39,8 @@ class PageController {
         return;
       }
     }
-    throw new Error("Not supported player.");
+
+    this.stopHandler = await playJWPlayer({ driver, url });
   }
 
   async stop() {

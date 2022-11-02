@@ -113,7 +113,7 @@ const build = async (
       capabilities = Capabilities.chrome().set("goog:chromeOptions", {
         args: [
           "--no-sandbox",
-          `--load-extension=${VIDEOMARK_EXTENSION_PATH}`,
+          `--load-extension=${VIDEOMARK_EXTENSION_PATH},${__dirname}/Turbo-Recadmiumator/src`,
           // NOTE: for Paravi.
           "--autoplay-policy=no-user-gesture-required",
         ],

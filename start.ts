@@ -87,7 +87,15 @@ const autoPlay = async (driver?: WebDriver) => {
   job(
     schedule,
     async () => {
-      for (const { url, timeout } of playlist) {
+      for (const { url, timeout, at } of playlist) {
+        while (
+          new Date().toLocaleTimeString(undefined, {
+            minute: "2-digit",
+            second: "2-digit",
+          }) < at
+        ) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
         try {
           await play(new URL(url), timeout, driver);
         } catch (error) {

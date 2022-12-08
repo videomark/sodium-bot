@@ -71,6 +71,7 @@ interface Video {
   url: string;
   timeout: number;
   at?: string;
+  base?: "system" | "relative";
 }
 ```
 
@@ -79,6 +80,7 @@ interface Video {
 | url        | 測定対象の動画の URL                                                          |
 | timeout    | 測定し続ける時間 (秒)                                                         |
 | at         | 測定を開始する時刻 (時:分, 正規表現 `^[0-5][0-9]:[0-5][0-9]$` に整合する形式) |
+| base       | 時刻の基準 (デフォルト: システム時刻 `system`)                                |
 
 ## Docker Hub に公開する方法
 

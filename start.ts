@@ -87,13 +87,26 @@ const autoPlay = async (driver?: WebDriver) => {
   job(
     schedule,
     async () => {
-      for (const { url, timeout, at } of playlist) {
-        while (
-          new Date().toLocaleTimeString(undefined, {
-            minute: "2-digit",
-            second: "2-digit",
-          }) < at
-        ) {
+      const startedAt = new Date();
+      for (const { url, timeout, at, base = "system" } of playlist) {
+        const now = {
+          system() {
+            return new Date().toLocaleTimeString(undefined, {
+              minute: "2-digit",
+              second: "2-digit",
+            });
+          },
+          relative() {
+            return new Date(
+              Date.now() - startedAt.valueOf()
+            ).toLocaleTimeString(undefined, {
+              timeZone: "UTC",
+              minute: "2-digit",
+              second: "2-digit",
+            });
+          },
+        }[base as "system" | "relative"];
+        while (now() < at) {
           await new Promise((resolve) => setTimeout(resolve, 100));
         }
         try {

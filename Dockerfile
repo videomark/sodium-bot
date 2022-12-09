@@ -1,4 +1,4 @@
-ARG from=docker.io/videomark/chrome:latest@sha256:443475d54d74b7d8eeb1f302f1bfb98137437c18507fb491534e407f1e43004e
+ARG from=docker.io/videomark/chrome:latest@sha256:d8ae4e159437168b6199d44c62c61905a52b65f18cf38d9b456f47bb3360ae19
 FROM ${from}
 
 # Install Node.js LTS.

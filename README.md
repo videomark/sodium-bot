@@ -109,3 +109,12 @@ docker compose push
 クライアント:
 
 - VideoMark Browser v81.0.4044.138-9
+
+## 環境変数
+
+SESSION_ID
+: セッション ID (デフォルト: sodium)
+
+BOT_SECRET_KEY
+: Basic 認証に用いるパスワード \
+noVNC Basic 認証の際に、ユーザー名に SESSION_ID 環境変数の値、パスワードに BOT_SECRET_KEY 環境変数の値を指定して利用する。

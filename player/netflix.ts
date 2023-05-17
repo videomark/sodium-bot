@@ -43,7 +43,7 @@ export async function setupNetflix(
 }
 
 /** Netflixであるか否か */
-export function isNetflixPage(url: URL): boolean {
+export function inNetflixPage(url: URL): boolean {
   return isSamePage(url, { hostname });
 }
 

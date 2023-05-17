@@ -12,7 +12,7 @@ const androidUrl = {
   hash: /^#\/settings\W/,
 };
 
-const isThisPage = (url: URL) =>
+const inSettingsPage = (url: URL) =>
   isSamePage(url, extensionUrl) || isSamePage(url, androidUrl);
 
-export default isThisPage;
+export default inSettingsPage;

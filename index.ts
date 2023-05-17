@@ -4,19 +4,19 @@ import * as player from "./player/player";
 import { play as playYouTube } from "./player/youtube";
 import { play as playParavi } from "./player/paravi";
 import { play as playTVer } from "./player/tver";
-import { isNetflixPage, playNetflix } from "./player/netflix";
-import { isAbemaPage, playAbema } from "./player/abema";
-import isYouTubePage from "./utils/isYouTubePage";
-import isParaviPage from "./utils/isParaviPage";
-import isTVerPage from "./utils/isTVerPage";
+import { inNetflixPage, playNetflix } from "./player/netflix";
+import { inAbemaPage, playAbema } from "./player/abema";
+import inYouTubePage from "./utils/inYouTubePage";
+import inParaviPage from "./utils/inParaviPage";
+import inTVerPage from "./utils/inTVerPage";
 import { screenshot } from "./utils/screenshot";
 
 const players = [
-  { supported: isYouTubePage, play: playYouTube },
-  { supported: isParaviPage, play: playParavi },
-  { supported: isTVerPage, play: playTVer },
-  { supported: isNetflixPage, play: playNetflix },
-  { supported: isAbemaPage, play: playAbema },
+  { supported: inYouTubePage, play: playYouTube },
+  { supported: inParaviPage, play: playParavi },
+  { supported: inTVerPage, play: playTVer },
+  { supported: inNetflixPage, play: playNetflix },
+  { supported: inAbemaPage, play: playAbema },
 ] as const;
 
 class PageController {

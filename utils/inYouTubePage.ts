@@ -2,9 +2,9 @@ import isSamePage from "./isSamePage";
 
 const hostname = /^([^\.]+\.)?youtube\.com$/i;
 
-const isThisPage = (url: URL) =>
+const inYouTubePage = (url: URL) =>
   isSamePage(url, {
-    hostname
+    hostname,
   });
 
-export default isThisPage;
+export default inYouTubePage;

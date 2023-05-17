@@ -2,13 +2,13 @@ import isSamePage from "./isSamePage";
 
 const protocol = "chrome-extension:";
 const pathname = "/index.html";
-const hash = "#/history";
+const hash = "#/onboarding";
 
-const isThisPage = (url: URL) =>
+const inTermsPage = (url: URL) =>
   isSamePage(url, {
     protocol,
     pathname,
     hash,
   });
 
-export default isThisPage;
+export default inTermsPage;

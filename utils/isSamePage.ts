@@ -7,7 +7,8 @@ type URLProperty = keyof URL &
     | "port"
     | "pathname"
     | "search"
-    | "hash");
+    | "hash"
+  );
 
 type URLLike =
   | URL
@@ -23,13 +24,13 @@ const property: URLProperty[] = [
   "port",
   "pathname",
   "search",
-  "hash"
+  "hash",
 ];
 
 const isSamePage = (urlLeft: URLLike, urlRight: URLLike) =>
   property
-    .filter(key => urlLeft[key] != null && urlRight[key] != null)
-    .every(key => {
+    .filter((key) => urlLeft[key] != null && urlRight[key] != null)
+    .every((key) => {
       const [lProp, rProp] = [urlLeft[key], urlRight[key]];
 
       if (typeof lProp === "string" && typeof rProp === "string") {

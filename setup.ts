@@ -1,9 +1,9 @@
 import { strict as assert } from "assert";
 import { WebDriver, Builder, By, Capabilities } from "selenium-webdriver";
 import { saveSession } from "./utils/session";
-import isTermsPage from "./utils/isTermsPage";
-import isHistoryPage from "./utils/isHistoryPage";
-import isSettingsPage from "./utils/isSettingsPage";
+import inTermsPage from "./utils/inTermsPage";
+import inHistoryPage from "./utils/inHistoryPage";
+import inSettingsPage from "./utils/inSettingsPage";
 import logger from "./utils/logger";
 import { setupNetflix } from "./player/netflix";
 
@@ -36,7 +36,7 @@ const switchToTermsPage = async (driver: WebDriver) => {
       url: new URL(await driver.getCurrentUrl()),
     });
   }
-  const terms = urls.find(({ url }) => isTermsPage(url));
+  const terms = urls.find(({ url }) => inTermsPage(url));
   if (terms == null) throw new Error("Terms page is not found.");
 
   await driver.switchTo().window(terms.windowName);
@@ -70,7 +70,7 @@ const agreeToTerms = async (driver: WebDriver) => {
   await driver.sleep(10e3);
 
   const url = new URL(await driver.getCurrentUrl());
-  assert(isHistoryPage(url), "Welcome page has not been opened.");
+  assert(inHistoryPage(url), "Welcome page has not been opened.");
 
   return url;
 };
@@ -86,7 +86,7 @@ const setSessionId = async (driver: WebDriver, sessionId: string) => {
     ).toString()
   );
   assert(
-    isSettingsPage(new URL(await driver.getCurrentUrl())),
+    inSettingsPage(new URL(await driver.getCurrentUrl())),
     "Settings page has not been opened."
   );
 

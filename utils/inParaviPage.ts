@@ -2,9 +2,9 @@ import isSamePage from "./isSamePage";
 
 const hostname = /^([^\.]+\.)?paravi\.jp$/i;
 
-const isThisPage = (url: URL) =>
+const inParaviPage = (url: URL) =>
   isSamePage(url, {
-    hostname
+    hostname,
   });
 
-export default isThisPage;
+export default inParaviPage;

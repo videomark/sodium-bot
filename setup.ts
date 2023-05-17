@@ -2,7 +2,7 @@ import { strict as assert } from "assert";
 import { WebDriver, Builder, By, Capabilities } from "selenium-webdriver";
 import { saveSession } from "./utils/session";
 import isTermsPage from "./utils/isTermsPage";
-import isWelcomePage from "./utils/isWelcomePage";
+import isHistoryPage from "./utils/isHistoryPage";
 import isSettingsPage from "./utils/isSettingsPage";
 import logger from "./utils/logger";
 import { setupNetflix } from "./player/netflix";
@@ -24,9 +24,6 @@ const waitForContentRendering = async (driver: WebDriver) => {
   );
   await driver.sleep(300);
 };
-
-const click = (driver: WebDriver) => (cssselector: string) =>
-  driver.findElement(By.css(cssselector)).click();
 
 const switchToTermsPage = async (driver: WebDriver) => {
   const windows = await driver.getAllWindowHandles();
@@ -63,15 +60,17 @@ const closeOthers = async (driver: WebDriver) => {
 const agreeToTerms = async (driver: WebDriver) => {
   await switchToTermsPage(driver);
   await closeOthers(driver);
-
-  ["#terms", "#privacy", "#submit"].forEach(click(driver));
+  await driver
+    .findElement(By.xpath(`//button[*/@aria-label="プライバシーを尊重します"]`))
+    .click();
+  await driver.findElement(By.xpath(`//button[text()="使い始める"]`)).click();
   await waitForContentRendering(driver);
 
   // NOTE: wait for welcome page to open.
   await driver.sleep(10e3);
 
   const url = new URL(await driver.getCurrentUrl());
-  assert(isWelcomePage(url), "Welcome page has not been opened.");
+  assert(isHistoryPage(url), "Welcome page has not been opened.");
 
   return url;
 };
@@ -80,9 +79,9 @@ const setSessionId = async (driver: WebDriver, sessionId: string) => {
   const url = await driver.getCurrentUrl();
   await driver.get(
     new URL(
-      `#/settings?${new URLSearchParams({
+      `?${new URLSearchParams({
         session_id: sessionId,
-      })}`,
+      })}#/settings`,
       url
     ).toString()
   );
@@ -93,7 +92,9 @@ const setSessionId = async (driver: WebDriver, sessionId: string) => {
 
   assert.equal(
     await driver
-      .findElement(By.xpath(`//*[text()="セッションID"]/following-sibling::*`))
+      .findElement(
+        By.xpath(`//*[*/text()="セッション ID"]/following-sibling::*`)
+      )
       .getText(),
     sessionId,
     "Failed to set Session ID."

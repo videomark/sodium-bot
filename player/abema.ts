@@ -6,7 +6,7 @@ import isSamePage from "../utils/isSamePage";
 const hostname = "abema.tv";
 
 /** Abemaであるか否か */
-export function isAbemaPage(url: URL): boolean {
+export function inAbemaPage(url: URL): boolean {
   return isSamePage(url, { hostname });
 }
 

@@ -2,9 +2,9 @@ import isSamePage from "./isSamePage";
 
 const hostname = /^([^\.]+\.)?tver\.jp$/i;
 
-const isThisPage = (url: URL) =>
+const inTVerPage = (url: URL) =>
   isSamePage(url, {
-    hostname
+    hostname,
   });
 
-export default isThisPage;
+export default inTVerPage;

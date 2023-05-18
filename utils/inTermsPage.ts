@@ -1,14 +1,14 @@
 import isSamePage from "./isSamePage";
 
 const protocol = "chrome-extension:";
-const pathname = "/qoelog/index.html";
-const hash = "#/welcome";
+const pathname = "/index.html";
+const hash = "#/onboarding";
 
-const isThisPage = (url: URL) =>
+const inTermsPage = (url: URL) =>
   isSamePage(url, {
     protocol,
     pathname,
-    hash
+    hash,
   });
 
-export default isThisPage;
+export default inTermsPage;

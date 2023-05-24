@@ -61,9 +61,21 @@ const agreeToTerms = async (driver: WebDriver) => {
   await switchToTermsPage(driver);
   await closeOthers(driver);
   await driver
-    .findElement(By.xpath(`//button[*/@aria-label="プライバシーを尊重します"]`))
+    .findElement(
+      By.xpath(
+        `\
+  //button[*/@aria-label="プライバシーを尊重します"]
+| //button[*/@aria-label="We respect your privacy"]`
+      )
+    )
     .click();
-  await driver.findElement(By.xpath(`//button[text()="使い始める"]`)).click();
+  await driver
+    .findElement(
+      By.xpath(`\
+  //button[text()="使い始める"]
+| //button[text()="Getting Started"]`)
+    )
+    .click();
   await waitForContentRendering(driver);
 
   // NOTE: wait for welcome page to open.
@@ -93,7 +105,9 @@ const setSessionId = async (driver: WebDriver, sessionId: string) => {
   assert.equal(
     await driver
       .findElement(
-        By.xpath(`//*[*/text()="セッション ID"]/following-sibling::*`)
+        By.xpath(`\
+  //*[*/text()="セッション ID"]/following-sibling::*
+| //*[*/text()="Session ID"]/following-sibling::*`)
       )
       .getText(),
     sessionId,

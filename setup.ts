@@ -73,7 +73,7 @@ const agreeToTerms = async (driver: WebDriver) => {
     .findElement(
       By.xpath(`\
   //button[text()="使い始める"]
-| //button[text()="Getting Started"]`)
+| //button[text()="Get Started"]`),
     )
     .click();
   await waitForContentRendering(driver);

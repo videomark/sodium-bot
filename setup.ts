@@ -92,6 +92,7 @@ const setSessionId = async (driver: WebDriver, sessionId: string) => {
   await driver.get(
     new URL(
       `?${new URLSearchParams({
+        bot: "true",
         session_id: sessionId,
       })}#/settings`,
       url

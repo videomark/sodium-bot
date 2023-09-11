@@ -125,11 +125,6 @@ class PageController {
           length.ended !== ended
         ) {
           handler(`${videos.length} videos ${playing} playing ${ended} ended`);
-
-          if (ended > 0) {
-            onCancel();
-            break;
-          }
         }
 
         length = {

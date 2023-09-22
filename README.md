@@ -84,8 +84,17 @@ interface Video {
 
 ## Docker Hub に公開する方法
 
-[videomark ユーザー](https://hub.docker.com/u/videomark)のみデプロイ可能。
-以下のコマンドを実行すると Docker Hub に公開される。
+コミッターのみデプロイ可能です。
+[新しいリリースを作成する](https://github.com/videomark/sodium-bot/releases/new)か、以下のコマンドを実行することで Docker Hub に公開されます。
+
+```
+$ gh release --repo=videomark/sodium-bot create --generate-notes v1.10.0
+```
+
+### Docker コマンドによるデプロイ
+
+[videomark ユーザー](https://hub.docker.com/u/videomark)のみデプロイ可能です。
+以下のコマンドを実行することで Docker Hub に公開されます。
 
 ```sh
 docker login

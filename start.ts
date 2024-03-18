@@ -1,6 +1,6 @@
 import * as arg from "arg";
 import { basename } from "path";
-import { job } from "cron";
+import { CronJob } from "cron";
 import { promise, race, after } from "fluture";
 import { WebDriver } from "selenium-webdriver";
 import { PageController } from "./";
@@ -84,9 +84,10 @@ const autoPlay = async (driver?: WebDriver) => {
     (await readFile("./botconfig.json")).toString(),
   );
 
-  job(
-    schedule,
-    async () => {
+  CronJob.from({
+    start: true,
+    cronTime: schedule,
+    async onTick() {
       const startedAt = new Date();
       for (const { url, timeout, at, base = "system" } of playlist) {
         const now = {
@@ -116,10 +117,8 @@ const autoPlay = async (driver?: WebDriver) => {
         }
       }
     },
-    undefined,
-    undefined,
-    timeZone
-  ).start();
+    timeZone,
+  });
 };
 
 const main = async () => {

@@ -64,10 +64,10 @@ const agreeToTerms = async (driver: WebDriver) => {
     .findElement(
       By.xpath(
         `\
-  //button[*/@aria-label="プライバシーを尊重します"]
-| //button[*/@aria-label="We respect your privacy"]`
-      )
-    )
+  //button[@aria-label="プライバシーを尊重します"]
+| //button[@aria-label="We respect your privacy"]`,
+      ),
+  )
     .click();
   await driver
     .findElement(

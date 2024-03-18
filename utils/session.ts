@@ -18,20 +18,20 @@ const serialize = async (driver: WebDriver): Promise<SerializedSession> => {
 
   return {
     id: (await driver.getSession()).getId(),
-    seleniumRemoteUrl: SELENIUM_REMOTE_URL
+    seleniumRemoteUrl: SELENIUM_REMOTE_URL,
   };
 };
 
 export async function saveSession(
   driver: WebDriver,
-  path: string = "session.json"
+  path: string = "session.json",
 ) {
   await writeFile(path, JSON.stringify(await serialize(driver)));
 }
 
 export async function loadSession(path: string = "session.json") {
   const { id, seleniumRemoteUrl }: SerializedSession = JSON.parse(
-    (await readFile(path)).toString()
+    (await readFile(path)).toString(),
   );
   const executor = new Executor(seleniumRemoteUrl);
   const session = new Session(id, {});

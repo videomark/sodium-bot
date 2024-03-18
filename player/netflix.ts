@@ -26,7 +26,7 @@ export async function setupNetflix(
     user: string;
     /** パスワード */
     password: string;
-  }
+  },
 ) {
   await driver.get(loginEndpoint);
   const currentUrl = await driver.getCurrentUrl();
@@ -59,7 +59,7 @@ export async function playNetflix({
   await driver.wait(
     until.elementsLocated(By.css("video")),
     loadingTimeout,
-    "Loading timed out."
+    "Loading timed out.",
   );
   await driver
     .findElement(By.css("video"))

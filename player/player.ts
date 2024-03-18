@@ -15,7 +15,7 @@ export async function play({ driver, url }: Options): Promise<StopHandler> {
 export async function stop({
   driver,
   url,
-  handler
+  handler,
 }: {
   driver?: WebDriver;
   url?: URL | string;
@@ -29,7 +29,7 @@ export async function stop({
 
 export async function waitForPlaying({
   driver,
-  timeout
+  timeout,
 }: {
   driver: WebDriver;
   timeout: number;
@@ -46,9 +46,9 @@ export async function waitForPlaying({
 
       const playing = (
         await Promise.all(
-          elements.map(element => element.getAttribute("paused"))
+          elements.map((element) => element.getAttribute("paused")),
         )
-      ).some(paused => !paused);
+      ).some((paused) => !paused);
 
       if (isCancel() || playing) break;
 
@@ -67,7 +67,7 @@ export async function waitForPlaying({
 
 export async function waitForShowStatus({
   driver,
-  timeout
+  timeout,
 }: {
   driver: WebDriver;
   timeout: number;
@@ -75,13 +75,13 @@ export async function waitForShowStatus({
   await driver.wait(
     until.elementsLocated(By.css("#__videomark_ui")),
     timeout,
-    "Status not found."
+    "Status not found.",
   );
 }
 
 export async function waitForShowQuality({
   driver,
-  timeout
+  timeout,
 }: {
   driver: WebDriver;
   timeout: number;
@@ -97,8 +97,8 @@ export async function waitForShowQuality({
       const text = await driver.executeScript(
         [
           `const root = document.querySelector("#__videomark_ui").shadowRoot`,
-          `return root.querySelector("summary").innerText`
-        ].join(";")
+          `return root.querySelector("summary").innerText`,
+        ].join(";"),
       );
 
       if (isCancel()) break;
@@ -114,7 +114,7 @@ export async function waitForShowQuality({
     return onCancel;
   });
   const source = race(wait)(
-    rejectAfter(timeout)(new Error("Quality not found."))
+    rejectAfter(timeout)(new Error("Quality not found.")),
   );
   await promise(source);
 }

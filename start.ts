@@ -81,7 +81,7 @@ const autoPlay = async (driver?: WebDriver) => {
   const { promises: fs } = await import("fs");
   const { readFile } = fs;
   const { schedule, playlist } = JSON.parse(
-    (await readFile("./botconfig.json")).toString()
+    (await readFile("./botconfig.json")).toString(),
   );
 
   job(
@@ -98,7 +98,7 @@ const autoPlay = async (driver?: WebDriver) => {
           },
           relative() {
             return new Date(
-              Date.now() - startedAt.valueOf()
+              Date.now() - startedAt.valueOf(),
             ).toLocaleTimeString(undefined, {
               timeZone: "UTC",
               minute: "2-digit",
@@ -143,7 +143,7 @@ const main = async () => {
         "--android-device-serial=...  (optional) device serial number",
         "--session-id=...             set session id",
         "-t, --timeout=...            set timeout period (seconds)",
-      ].join("\n")
+      ].join("\n"),
     );
     return;
   }

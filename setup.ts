@@ -20,7 +20,7 @@ const enabledNetflix = Boolean(NETFLIX_USER);
 
 const waitForContentRendering = async (driver: WebDriver) => {
   await driver.wait((driver: WebDriver) =>
-    driver.executeScript(`return document.readyState === "complete"`)
+    driver.executeScript(`return document.readyState === "complete"`),
   );
   await driver.sleep(300);
 };
@@ -46,7 +46,7 @@ const switchToTermsPage = async (driver: WebDriver) => {
 const closeOthers = async (driver: WebDriver) => {
   const current = await driver.getWindowHandle();
   const others = (await driver.getAllWindowHandles()).filter(
-    (other) => other !== current
+    (other) => other !== current,
   );
 
   for (const other of others) {
@@ -67,7 +67,7 @@ const agreeToTerms = async (driver: WebDriver) => {
   //button[@aria-label="プライバシーを尊重します"]
 | //button[@aria-label="We respect your privacy"]`,
       ),
-  )
+    )
     .click();
   await driver
     .findElement(
@@ -95,12 +95,12 @@ const setSessionId = async (driver: WebDriver, sessionId: string) => {
         bot: "true",
         session_id: sessionId,
       })}#/settings`,
-      url
-    ).toString()
+      url,
+    ).toString(),
   );
   assert(
     inSettingsPage(new URL(await driver.getCurrentUrl())),
-    "Settings page has not been opened."
+    "Settings page has not been opened.",
   );
 
   assert.equal(
@@ -108,17 +108,17 @@ const setSessionId = async (driver: WebDriver, sessionId: string) => {
       .findElement(
         By.xpath(`\
   //*[*/text()="セッション ID"]/following-sibling::*
-| //*[*/text()="Session ID"]/following-sibling::*`)
+| //*[*/text()="Session ID"]/following-sibling::*`),
       )
       .getText(),
     sessionId,
-    "Failed to set Session ID."
+    "Failed to set Session ID.",
   );
 };
 
 const build = async (
   browser: string,
-  options?: { androidDeviceSerial?: string }
+  options?: { androidDeviceSerial?: string },
 ) => {
   let capabilities: Capabilities | {} = {};
   switch (browser) {
@@ -167,7 +167,7 @@ const build = async (
 
 export const setup = async (
   browser: string = "chrome",
-  options?: { sessionId?: string; androidDeviceSerial?: string }
+  options?: { sessionId?: string; androidDeviceSerial?: string },
 ) => {
   let driver;
   try {

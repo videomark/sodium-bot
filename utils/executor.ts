@@ -1,6 +1,6 @@
 import {
   HttpClient,
-  Executor as SeleniumExecutor
+  Executor as SeleniumExecutor,
 } from "selenium-webdriver/http";
 
 class Executor extends SeleniumExecutor {
@@ -16,7 +16,7 @@ class Executor extends SeleniumExecutor {
     this.defineCommand(
       "sendDevToolsCommand",
       "POST",
-      "/session/:sessionId/chromium/send_command"
+      "/session/:sessionId/chromium/send_command",
     );
   }
 }

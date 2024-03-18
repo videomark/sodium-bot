@@ -106,12 +106,12 @@ class PageController {
               all([
                 element.getAttribute("paused"),
                 element.getAttribute("ended"),
-              ]).catch(() => null)
-            )
+              ]).catch(() => null),
+            ),
           )
         ).filter(
           (attributes): attributes is NonNullable<typeof attributes> =>
-            attributes != null
+            attributes != null,
         );
 
         if (isCancel()) break;

@@ -28,7 +28,7 @@ RUN npm ci
 COPY . .
 
 # Setup Entrypoint.
-COPY ./docker-entrypoint.sh /
+COPY ./docker-entrypoint.sh ./docker-cleanup.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 ENV DISPLAY=:0
 ENV SESSION_ID=sodium

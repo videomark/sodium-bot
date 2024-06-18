@@ -1,4 +1,4 @@
-FROM ubuntu:22.04@sha256:77906da86b60585ce12215807090eb327e7386c8fafb5402369e421f44eff17e
+FROM ubuntu:24.04@sha256:2e863c44b718727c860746568e1d54afd13b2fa71b160f5cd9058fc436217b30
 RUN \
   apt-get update -qq \
   && DEBIAN_FRONTEND=noninteractive \

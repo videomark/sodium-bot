@@ -9,7 +9,7 @@
     "@types/node": "^22.0.0",
     "@types/selenium-webdriver": "^4.1.5",
     "arg": "^5.0.2",
-    "cron": "^3.0.0",
+    "cron": "^4.0.0",
     "debug": "^4.3.4",
     "dotenv": "^16.0.3",
     "fluture": "^14.0.0",

@@ -1,22 +1,15 @@
-FROM ubuntu:24.04@sha256:6015f66923d7afbc53558d7ccffd325d43b4e249f41a6e93eef074c9505d2233
+FROM node:22-bookworm
 RUN \
   apt-get update -qq \
-  && DEBIAN_FRONTEND=noninteractive \
-  apt-get install -qq \
+  && apt-get install -qq \
   curl \
-  gnupg2 \
-  tzdata \
   fonts-noto-cjk \
-  xvfb \
   unzip \
-  && curl -sL https://dl.google.com/linux/linux_signing_key.pub \
-  | apt-key add - \
-  && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" \
-  > /etc/apt/sources.list.d/google-chrome.list \
-  && apt-get update -qq \
-  && apt-get install -qq google-chrome-stable \
-  && ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
+  xvfb \
   && rm -r /var/lib/apt/lists
+RUN \
+  npx -y playwright@latest install --with-deps chromium \
+  && ln -sf /root/.cache/ms-playwright/chromium-*/*/chrome /usr/bin/google-chrome
 RUN \
   CHROME_MAJOR_VERSION=$(google-chrome --version | sed -E "s/.* ([0-9]+)(\.[0-9]+){3}.*/\1/") \
   && CHROME_DRIVER_VERSION=$(curl -sSfL "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${CHROME_MAJOR_VERSION}") \

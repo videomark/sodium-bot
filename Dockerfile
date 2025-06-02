@@ -1,13 +1,6 @@
 ARG from=docker.io/videomark/chrome:latest@sha256:e85337a8dc23e5650579998f0e702de1b4388c1dbe31fa1e03e5934165277d30
 FROM ${from}
 
-# Install Node.js LTS.
-RUN \
-  curl -sL https://deb.nodesource.com/setup_lts.x \
-  | bash - \
-  && apt-get install -y --no-install-recommends nodejs \
-  && rm -r /var/lib/apt/lists
-
 # Setup Desktop.
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TZ=Asia/Tokyo
@@ -19,6 +12,7 @@ RUN apt-get update \
   x11vnc \
   xterm \
   && rm -r /var/lib/apt/lists \
+  && ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
   && ln -s vnc.html /usr/share/novnc/index.html
 
 # Setup Sodium Bot.

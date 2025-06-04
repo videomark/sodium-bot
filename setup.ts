@@ -1,11 +1,11 @@
 import { strict as assert } from "assert";
-import { WebDriver, Builder, By, Capabilities } from "selenium-webdriver";
-import { saveSession } from "./utils/session";
-import inTermsPage from "./utils/inTermsPage";
+import { Builder, By, Capabilities, type WebDriver } from "selenium-webdriver";
+import { setupNetflix } from "./player/netflix";
 import inHistoryPage from "./utils/inHistoryPage";
 import inSettingsPage from "./utils/inSettingsPage";
+import inTermsPage from "./utils/inTermsPage";
 import logger from "./utils/logger";
-import { setupNetflix } from "./player/netflix";
+import { saveSession } from "./utils/session";
 
 require("dotenv").config();
 
@@ -130,6 +130,7 @@ const build = async (
         args: [
           "--no-sandbox",
           `--load-extension=${VIDEOMARK_EXTENSION_PATH}`,
+          "--window-size=1920,1080",
           // NOTE: for Paravi.
           "--autoplay-policy=no-user-gesture-required",
         ],
@@ -166,7 +167,7 @@ const build = async (
 };
 
 export const setup = async (
-  browser: string = "chrome",
+  browser = "chrome",
   options?: { sessionId?: string; androidDeviceSerial?: string },
 ) => {
   let driver;
@@ -175,7 +176,6 @@ export const setup = async (
     switch (browser) {
       case "chrome": {
         logger.info("Wait for warm up...");
-        await driver.manage().window().maximize();
         await driver.sleep(10e3);
 
         logger.info("Agree to terms.");

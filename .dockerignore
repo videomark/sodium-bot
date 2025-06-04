@@ -1,6 +1,5 @@
 **/.*
 /.github/
-/ansible/
 /chrome/
 /node_modules/
 /compose.yml

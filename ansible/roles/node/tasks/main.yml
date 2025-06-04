@@ -1,5 +1,0 @@
----
-- name: Setup Node.js.
-  import_tasks: node-debian.yml
-  when:
-    - ansible_os_family == "Debian"

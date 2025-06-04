@@ -1,2 +1,0 @@
-[Service]
-ExecStart=/usr/bin/env ansible-pull --only-if-changed --inventory {{ inventory_hostname }}, --url {{ ansible_pull_url }} {{ ansible_pull_playbook_path }}

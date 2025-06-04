@@ -1,6 +1,0 @@
----
-dependencies:
-  - role: node
-  - role: chrome
-  - role: videomark_extension
-  - role: adjust_display_size

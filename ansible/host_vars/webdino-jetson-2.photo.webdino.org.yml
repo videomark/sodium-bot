@@ -1,9 +1,0 @@
----
-description:
-  name: Jetson Nano 2号
-  site: dynamis 実家
-  line:
-  since: 2019-11-22 12:00:00 +09:00
-  status: ネットワーク接続なし
-autossh_tunnel_host: photo.webdino.org
-autossh_tunnel_port: 12222

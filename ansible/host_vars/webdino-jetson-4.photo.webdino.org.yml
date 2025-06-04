@@ -1,8 +1,0 @@
----
-description:
-  name: Jetson Nano 4号
-  site: WebDINO Japan オフィス
-  line: オフィスの回線
-  status: ネットワーク接続なし
-autossh_tunnel_host: photo.webdino.org
-autossh_tunnel_port: 12224

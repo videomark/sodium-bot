@@ -18,10 +18,6 @@ cd sodium-bot
 docker compose run --rm sodium-bot start --session-id=sodium
 ```
 
-### 自動計測マシンの場合
-
-[Ansible による Sodium Bot 構築](ansible/README.md)を参照。
-
 ### Android 端末の場合
 
 USB デバッグを有効化した後、ホスト側のパソコンと接続する。

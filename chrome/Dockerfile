@@ -19,7 +19,7 @@ RUN \
   && unzip chromedriver.zip chromedriver-linux64/chromedriver \
   && install chromedriver-linux64/chromedriver /usr/local/bin/ \
   && rm -r chromedriver.zip chromedriver-linux64/
-ARG extension_url=https://sodium-extension.netlify.app/
+ARG extension_url=https://v3-2--sodium-extension.netlify.app/
 ENV VIDEOMARK_EXTENSION_PATH=/videomark-extension
 RUN \
   curl \

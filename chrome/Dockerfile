@@ -28,4 +28,4 @@ RUN \
   && mkdir -p "${VIDEOMARK_EXTENSION_PATH}" \
   && unzip -q dist.zip -d "${VIDEOMARK_EXTENSION_PATH}" \
   && rm dist.zip
-CMD xvfb-run chromedriver --whitelisted-ips="" --port="${PORT:-9515}"
+CMD xvfb-run --server-args='-screen 0 1920x1080x24' chromedriver --whitelisted-ips="" --port="${PORT:-9515}"

@@ -107,6 +107,7 @@ const build = async (browser = "chrome") => {
   }
 
   const ctx = await chromium.launchPersistentContext("", {
+    channel: "chrome",
     headless: false,
     viewport: {
       width: 1920,

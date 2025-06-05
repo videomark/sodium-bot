@@ -16,6 +16,11 @@ RUN apt-get update \
   && ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
   && ln -s vnc.html /usr/share/novnc/index.html
 
+# Install Browser.
+RUN npx @puppeteer/browsers install chrome@stable --path=/root/.cache \
+  && mkdir -p /opt/google/chrome \
+  && ln -sf /root/.cache/chrome/*/chrome-*/chrome /opt/google/chrome/chrome
+
 # Download VideoMark extension.
 ARG VIDEOMARK_EXTENSION_URL=https://v3-2--sodium-extension.netlify.app/
 ENV VIDEOMARK_EXTENSION_PATH=/videomark-extension
@@ -30,7 +35,7 @@ RUN \
 # Setup Sodium Bot.
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci && npx playwright install --with-deps
+RUN npm ci && npx playwright install-deps chromium
 COPY . .
 
 # Setup Entrypoint.

@@ -40,6 +40,7 @@ export async function waitForPlaying({
 
   const waitP = async () => {
     while (!isCancel()) {
+      await page.waitForSelector("video");
       const elements = await page.$$("video");
 
       if (isCancel()) break;

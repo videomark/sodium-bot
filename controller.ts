@@ -91,6 +91,7 @@ export class PageController {
     const waitP = async () => {
       while (!isCancel()) {
         const { page } = this;
+        await page.waitForSelector("video");
         const elements = await page.$$("video");
 
         if (isCancel()) break;

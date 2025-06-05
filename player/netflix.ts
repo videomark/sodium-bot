@@ -1,7 +1,7 @@
-import * as assert from "node:assert/strict";
-import { By, Key, until, WebDriver } from "selenium-webdriver";
-import * as player from "./player";
-import isSamePage from "../utils/isSamePage";
+import assert from "node:assert/strict";
+import type { Page } from "playwright";
+import isSamePage from "../utils/isSamePage.ts";
+import * as player from "./player.ts";
 
 /** ログイン画面のURL */
 const loginEndpoint = "https://www.netflix.com/login";
@@ -20,7 +20,7 @@ const hostname = "www.netflix.com";
  * @param auth 認証情報
  */
 export async function setupNetflix(
-  driver: WebDriver,
+  page: Page,
   auth: {
     /** メールアドレス or 電話番号 */
     user: string;
@@ -28,18 +28,21 @@ export async function setupNetflix(
     password: string;
   },
 ) {
-  await driver.get(loginEndpoint);
-  const currentUrl = await driver.getCurrentUrl();
-  await driver.findElement(By.css(`input[type="text"]`)).sendKeys(auth.user);
-  await driver
-    .findElement(By.css(`input[type="password"]`))
-    .sendKeys(auth.password, Key.RETURN);
+  await page.goto(loginEndpoint);
+
+  const loginPage = page.url();
+
+  await page.fill(`input[type="text"]`, auth.user);
+  await page.fill(`input[type="password"]`, auth.password);
+  await page.locator(`button[type="submit"]`).press("Enter");
+
   const timeoutAt = Date.now() + loginTimeout;
-  while ((await driver.getCurrentUrl()) === currentUrl) {
+  while (page.url() === loginPage) {
     assert(Date.now() < timeoutAt, "Netflix login timed out.");
-    await driver.sleep(200);
+    await page.waitForTimeout(200);
   }
-  await driver.get("about:blank");
+
+  await page.goto("about:blank");
 }
 
 /** Netflixであるか否か */
@@ -49,20 +52,16 @@ export function inNetflixPage(url: URL): boolean {
 
 /** Netflixでの視聴 */
 export async function playNetflix({
-  driver,
+  page,
   url,
 }: player.Options): ReturnType<typeof player.play> {
-  await driver.get(url.toString());
+  await page.goto(url.toString());
 
   // Full-screen
   // NOTE: 再生が開始しない限りフルスクリーンにできないので待機
-  await driver.wait(
-    until.elementsLocated(By.css("video")),
-    loadingTimeout,
-    "Loading timed out.",
-  );
-  await driver
-    .findElement(By.css("video"))
-    .sendKeys("f")
+  await page.waitForSelector("video", { timeout: loadingTimeout });
+  await page
+    .locator("video")
+    .press("f")
     .catch(() => {});
 }

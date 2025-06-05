@@ -1,6 +1,5 @@
-import { By } from "selenium-webdriver";
-import * as player from "./player";
-import isSamePage from "../utils/isSamePage";
+import isSamePage from "../utils/isSamePage.ts";
+import * as player from "./player.ts";
 
 /** Abemaであることを判定するためのホスト名のパターン */
 const hostname = "abema.tv";
@@ -12,14 +11,11 @@ export function inAbemaPage(url: URL): boolean {
 
 /** Abemaでの視聴 */
 export async function playAbema({
-  driver,
+  page,
   url,
 }: player.Options): ReturnType<typeof player.play> {
-  await driver.get(url.toString());
+  await page.goto(url.toString());
 
   // Full-screen
-  await driver
-    .findElement(By.css("html"))
-    .sendKeys("f")
-    .catch(() => {});
+  await page.keyboard.press("f").catch(() => {});
 }

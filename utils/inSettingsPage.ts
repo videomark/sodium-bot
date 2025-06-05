@@ -1,18 +1,10 @@
-import isSamePage from "./isSamePage";
-
-const extensionUrl = {
-  protocol: "chrome-extension:",
-  pathname: "/index.html",
-  hash: "#/settings",
-};
-
-const androidUrl = {
-  protocol: "chrome:",
-  pathname: "/",
-  hash: /^#\/settings\W/,
-};
+import isSamePage from "./isSamePage.ts";
 
 const inSettingsPage = (url: URL) =>
-  isSamePage(url, extensionUrl) || isSamePage(url, androidUrl);
+  isSamePage(url, {
+    protocol: "chrome-extension:",
+    pathname: "/index.html",
+    hash: "#/settings",
+  });
 
 export default inSettingsPage;

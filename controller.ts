@@ -1,43 +1,39 @@
-import { WebDriver, By } from "selenium-webdriver";
-import Fluture, { FutureInstance } from "fluture";
-import * as player from "./player/player";
-import { play as playYouTube } from "./player/youtube";
-import { play as playParavi } from "./player/paravi";
-import { play as playTVer } from "./player/tver";
-import { inNetflixPage, playNetflix } from "./player/netflix";
-import { inAbemaPage, playAbema } from "./player/abema";
-import inYouTubePage from "./utils/inYouTubePage";
-import inParaviPage from "./utils/inParaviPage";
-import inTVerPage from "./utils/inTVerPage";
-import { screenshot } from "./utils/screenshot";
+import Fluture, { type FutureInstance } from "fluture";
+import type { Page } from "playwright";
+import { inAbemaPage, playAbema } from "./player/abema.ts";
+import { inNetflixPage, playNetflix } from "./player/netflix.ts";
+import * as player from "./player/player.ts";
+import { play as playTVer } from "./player/tver.ts";
+import { play as playYouTube } from "./player/youtube.ts";
+import inTVerPage from "./utils/inTVerPage.ts";
+import inYouTubePage from "./utils/inYouTubePage.ts";
 
 const players = [
   { supported: inYouTubePage, play: playYouTube },
-  { supported: inParaviPage, play: playParavi },
   { supported: inTVerPage, play: playTVer },
   { supported: inNetflixPage, play: playNetflix },
   { supported: inAbemaPage, play: playAbema },
 ] as const;
 
-class PageController {
-  driver: WebDriver;
+export class PageController {
+  page: Page;
   url: URL;
   stopHandler?: player.StopHandler;
 
-  constructor({ driver, url }: { driver: WebDriver; url: URL }) {
+  constructor({ page, url }: { page: Page; url: URL }) {
     if (!players.some(({ supported }) => supported(url))) {
       throw new Error("Not supported URL.");
     }
-    this.driver = driver;
+    this.page = page;
     this.url = url;
   }
 
   async play() {
-    const { driver, url } = this;
+    const { page, url } = this;
 
     for (const player of players) {
       if (player.supported(url)) {
-        this.stopHandler = await player.play({ driver, url });
+        this.stopHandler = await player.play({ page, url });
         return;
       }
     }
@@ -45,11 +41,11 @@ class PageController {
   }
 
   async stop() {
-    const { driver, stopHandler } = this;
+    const { page, stopHandler } = this;
 
     await player.stop({
       handler: stopHandler,
-      driver,
+      page,
       url: "about:blank",
     });
   }
@@ -58,27 +54,27 @@ class PageController {
    * @param ms timeout
    */
   async waitForPlaying(ms: number) {
-    const { driver } = this;
+    const { page } = this;
 
-    await player.waitForPlaying({ driver, timeout: ms });
+    await player.waitForPlaying({ page, timeout: ms });
   }
 
   /**
    * @param ms timeout
    */
   async waitForShowStatus(ms: number) {
-    const { driver } = this;
+    const { page } = this;
 
-    await player.waitForShowStatus({ driver, timeout: ms });
+    await player.waitForShowStatus({ page, timeout: ms });
   }
 
   /**
    * @param ms timeout
    */
   async waitForShowQuality(ms: number) {
-    const { driver } = this;
+    const { page } = this;
 
-    await player.waitForShowQuality({ driver, timeout: ms });
+    await player.waitForShowQuality({ page, timeout: ms });
   }
 
   logger(handler: (message: string) => void): FutureInstance<never, void> {
@@ -87,15 +83,15 @@ class PageController {
     const onCancel = () => (cancel = true);
 
     let length = {
-      videos: NaN,
-      playing: NaN,
-      ended: NaN,
+      videos: Number.NaN,
+      playing: Number.NaN,
+      ended: Number.NaN,
     };
 
     const waitP = async () => {
       while (!isCancel()) {
-        const { driver } = this;
-        const elements = await driver.findElements(By.css("video"));
+        const { page } = this;
+        const elements = await page.$$("video");
 
         if (isCancel()) break;
 
@@ -134,7 +130,7 @@ class PageController {
         };
 
         // NOTE: Interval time.
-        await driver.sleep(200);
+        await page.waitForTimeout(200);
       }
     };
 
@@ -144,11 +140,7 @@ class PageController {
     });
   }
 
-  async screenshot(path: string = "screenshot.png") {
-    const { driver } = this;
-
-    await screenshot(driver, path);
+  async screenshot(path = "screenshot.png") {
+    await this.page.screenshot({ path });
   }
 }
-
-export { PageController };

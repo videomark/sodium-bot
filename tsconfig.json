@@ -1,11 +1,7 @@
 {
+  "extends": "@tsconfig/node22",
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "esnext",
-    "strict": true,
-    "moduleResolution": "node",
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   }
 }

@@ -1,4 +1,4 @@
-import isSamePage from "./isSamePage";
+import isSamePage from "./isSamePage.ts";
 
 const protocol = "chrome-extension:";
 const pathname = "/index.html";

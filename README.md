@@ -18,20 +18,6 @@ cd sodium-bot
 docker compose run --rm sodium-bot start --session-id=sodium
 ```
 
-### Android 端末の場合
-
-USB デバッグを有効化した後、ホスト側のパソコンと接続する。
-加えて、あらかじめ VideoMark Browser を起動しておき、新しいタブを開いておく。
-
-```sh
-adb start-server
-CHROMEDRIVER_VERSION=81.0.4044.138 npx --ignore-existing chromedriver --port=8080 &
-export SELENIUM_REMOTE_URL=http://localhost:8080
-export BROWSER=android
-npm ci
-npm start -- --session-id=sodium
-```
-
 ## その他の使い方
 
 ### 特定の動画の再生
@@ -84,7 +70,7 @@ interface Video {
 [新しいリリースを作成する](https://github.com/videomark/sodium-bot/releases/new)か、以下のコマンドを実行することで Docker Hub に公開されます。
 
 ```
-$ gh release --repo=videomark/sodium-bot create --generate-notes v1.10.0
+$ gh release --repo=videomark/sodium-bot create --generate-notes v2.0.0
 ```
 
 ### Docker コマンドによるデプロイ
@@ -101,19 +87,7 @@ docker compose push
 
 ## 動作環境
 
-- Docker v20 にて動作確認
-
-### Android 端末
-
-ホスト:
-
-- adb v1.0.39
-- node v14.4.0
-- npm, npx v6.14.5
-
-クライアント:
-
-- VideoMark Browser v81.0.4044.138-9
+- Docker v28 にて動作確認
 
 ## 環境変数
 

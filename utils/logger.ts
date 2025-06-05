@@ -2,11 +2,7 @@ import debug from "debug";
 
 debug.log = console.debug.bind(console);
 
-const levels: (keyof Console & ("error" | "warn" | "info"))[] = [
-  "error",
-  "warn",
-  "info",
-];
+const levels = ["error", "warn", "info"] as const;
 
 const [error, warn, info] = levels.map((level) => {
   const logger = debug(level);

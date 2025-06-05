@@ -1,7 +1,6 @@
 **/.*
+**/*.log
 /.github/
-/chrome/
-/node_modules/
 /compose.yml
+/node_modules/
 /screenshot.png
-/session.json

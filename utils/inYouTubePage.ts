@@ -1,4 +1,4 @@
-import isSamePage from "./isSamePage";
+import isSamePage from "./isSamePage.ts";
 
 const hostname = /^([^\.]+\.)?youtube\.com$/i;
 

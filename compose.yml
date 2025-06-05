@@ -1,21 +1,14 @@
 services:
-  chrome:
-    image: &chrome_image docker.io/videomark/chrome:${VERSION:-latest}
-    build:
-      context: chrome
-      # args:
-      #   extension_url: https://sodium-extension.netlify.com/
-    init: true
   sodium-bot:
     image: docker.io/videomark/sodium-bot:${VERSION:-latest}
-    build:
-      context: "."
-      args:
-        from: *chrome_image
+    build: "."
     ipc: host
     # ports:
     #   - "8080:8080"
     # environment:
     #   DEBUG: "*"
+    #   BOT_SECRET_KEY: ${BOT_SECRET_KEY:?}
+    #   NETFLIX_USER: ${NETFLIX_USER}
+    #   NETFLIX_PASSWORD: ${NETFLIX_PASSWORD}
     # volumes:
     #   - ".:/app"

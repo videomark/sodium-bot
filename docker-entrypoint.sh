@@ -1,8 +1,9 @@
 #!/bin/sh
 set -e
 
-if [ -z "$(command -v "${1}")" ]; then
-  xvfb-run --server-args='-screen 0 1920x1080x24' npm run -- "$@"
+if [ "${1}" = start ]; then
+  shift
+  xvfb-run --server-args='-screen 0 1920x1080x24' node --run start -- "$@"
   exit $?
 fi
 

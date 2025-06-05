@@ -1,9 +1,9 @@
 #!/bin/sh
 set -e
 
-rm -rf /tmp/.com.google.Chrome.*
-rm -rf /tmp/.org.chromium.Chromium.*
+rm -rf /tmp/playwright_*
 
 if [ -f /tmp/supervisord.pid ]; then
   kill "$(cat /tmp/supervisord.pid)"
+  rm -f /tmp/supervisord.pid
 fi

@@ -1,14 +1,13 @@
-import * as arg from "arg";
-import { basename } from "path";
+import arg from "arg";
 import { CronJob } from "cron";
-import { promise, race, after } from "fluture";
-import { WebDriver } from "selenium-webdriver";
-import { PageController } from "./";
-import { loadSession } from "./utils/session";
-import logger from "./utils/logger";
-import { setup } from "./setup";
+import { after, promise, race } from "fluture";
+import { basename } from "node:path";
+import type { Page } from "playwright";
+import { PageController } from "./controller.ts";
+import { setup } from "./setup.ts";
+import logger from "./utils/logger.ts";
 
-const { SESSION_ID, BROWSER, ANDROID_DEVICE_SERIAL } = process.env;
+const { SESSION_ID, BROWSER } = process.env;
 
 const retry = async (count: number, proc: () => Promise<void>) => {
   for (const _ of Array(count).keys()) {
@@ -25,17 +24,13 @@ const retry = async (count: number, proc: () => Promise<void>) => {
 /**
  * @param url
  * @param seconds timeout
- * @param driver WebDriver
  */
-const play = async (url: URL, seconds: number = 60, driver?: WebDriver) => {
-  const page = new PageController({
-    driver: driver || (await loadSession()),
-    url,
-  });
+const play = async (url: URL, seconds = 60, page: Page) => {
+  const controller = new PageController({ page, url });
   const timeoutIn = seconds * 1e3;
   const timeoutAt = Date.now() + timeoutIn;
   const timeout = setTimeout(async () => {
-    await page.stop();
+    await controller.stop();
     throw new Error(`${seconds} seconds timeout.`);
   }, timeoutIn);
 
@@ -43,18 +38,18 @@ const play = async (url: URL, seconds: number = 60, driver?: WebDriver) => {
     await retry(3, async () => {
       logger.info("Play...");
       logger.info(`URL: ${url}`);
-      await page.screenshot();
-      await page.play();
-      await page.screenshot();
-      await page.waitForPlaying(30_000);
+      await controller.screenshot();
+      await controller.play();
+      await controller.screenshot();
+      await controller.waitForPlaying(30_000);
       logger.info("Playing.");
-      await page.screenshot();
-      await page.waitForShowStatus(90_000);
+      await controller.screenshot();
+      await controller.waitForShowStatus(90_000);
       logger.info("Show status.");
-      await page.screenshot();
+      await controller.screenshot();
     });
   } catch (error) {
-    await page.stop();
+    await controller.stop();
     throw error;
   } finally {
     clearTimeout(timeout);
@@ -62,26 +57,22 @@ const play = async (url: URL, seconds: number = 60, driver?: WebDriver) => {
 
   const [left, right] = [
     after(Math.max(0, timeoutAt - Date.now()))(undefined as unknown),
-    page.logger((message) => {
+    controller.logger((message) => {
       logger.info(message);
-      page.screenshot();
+      controller.screenshot();
     }),
   ];
 
   await promise(race(left)(right));
-  await page.stop();
+  await controller.stop();
   logger.info("Stop.");
 };
 
-/**
- * @param driver WebDriver
- */
-const autoPlay = async (driver?: WebDriver) => {
+const autoPlay = async (page: Page) => {
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const { promises: fs } = await import("fs");
-  const { readFile } = fs;
+  const fs = await import("node:fs/promises");
   const { schedule, playlist } = JSON.parse(
-    (await readFile("./botconfig.json")).toString(),
+    (await fs.readFile("./botconfig.json")).toString(),
   );
 
   CronJob.from({
@@ -111,7 +102,7 @@ const autoPlay = async (driver?: WebDriver) => {
           await new Promise((resolve) => setTimeout(resolve, 100));
         }
         try {
-          await play(new URL(url), timeout, driver);
+          await play(new URL(url), timeout, page);
         } catch (error) {
           logger.error(error);
         }
@@ -119,66 +110,45 @@ const autoPlay = async (driver?: WebDriver) => {
     },
     timeZone,
   });
+
+  // Keep the process running
+  await new Promise(() => {});
 };
 
 const main = async () => {
   const args = arg({
     "-h": "--help",
     "--help": Boolean,
-    "--android": Boolean,
-    "--android-device-serial": String,
     "--session-id": String,
     "-t": "--timeout",
     "--timeout": Number,
   });
 
   if (args["--help"]) {
-    console.log(
-      [
-        `Usage: ${process.argv0} ${basename(__filename)} [options] [url]`,
-        "Options:",
-        "-h, --help                   print command line options",
-        "--android                    connect to android device with adb",
-        "--android-device-serial=...  (optional) device serial number",
-        "--session-id=...             set session id",
-        "-t, --timeout=...            set timeout period (seconds)",
-      ].join("\n"),
-    );
+    console.log(`\
+Usage: ${process.argv0} ${basename(import.meta.filename)} [options] [url]
+Options:
+  -h, --help          print command line options
+  --session-id=...    set session id
+  -t, --timeout=...   set timeout period (seconds)`);
+
     return;
   }
 
-  const browser =
-    args["--android"] || args["--android-device-serial"] != null
-      ? "android"
-      : BROWSER;
-  const androidDeviceSerial =
-    args["--android-device-serial"] == null
-      ? ANDROID_DEVICE_SERIAL
-      : args["--android-device-serial"];
   const sessionId =
     args["--session-id"] == null ? SESSION_ID : args["--session-id"];
   const timeout = args["--timeout"];
-  const url = args._[0];
+  const [url] = args._;
 
-  if (browser === "chrome" && sessionId == null) {
-    throw new Error("SESSION_ID or --session-id=... required.");
-  }
+  const page = await setup(BROWSER, sessionId);
 
-  const driver = await setup(browser, {
-    sessionId,
-    androidDeviceSerial,
-  });
-
-  // NOTE: Unhandled promise rejection terminates Node.js process with non-zero exit code.
-  process.on("unhandledRejection", (event) => {
-    throw event;
-  });
-
-  if (url == null) {
-    await autoPlay(driver);
+  if (url) {
+    await play(new URL(url), timeout, page);
   } else {
-    await play(new URL(url), timeout, driver);
+    await autoPlay(page);
   }
+
+  await page.close();
 };
 
-if (require.main === module) main();
+await main();

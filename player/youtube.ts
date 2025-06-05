@@ -1,23 +1,19 @@
-import { By } from "selenium-webdriver";
-import * as player from "./player";
+import * as player from "./player.ts";
 
 export async function play({
-  driver,
+  page,
   url,
 }: player.Options): ReturnType<typeof player.play> {
-  await driver.get(url.toString());
-  await driver
-    .findElement(By.css("button.ytp-ad-survey-interstitial-action-button"))
+  await page.goto(url.toString());
+  await page
+    .locator("button.ytp-ad-survey-interstitial-action-button")
     .click()
     .catch(() => {});
-  await driver
-    .findElement(By.css("button.ytp-ad-skip-button"))
+  await page
+    .locator("button.ytp-ad-skip-button")
     .click()
     .catch(() => {});
 
   // Full-screen
-  await driver
-    .findElement(By.css("html"))
-    .sendKeys("f")
-    .catch(() => {});
+  await page.keyboard.press("f").catch(() => {});
 }

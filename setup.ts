@@ -1,202 +1,150 @@
-import { strict as assert } from "assert";
-import { Builder, By, Capabilities, type WebDriver } from "selenium-webdriver";
-import { setupNetflix } from "./player/netflix";
-import inHistoryPage from "./utils/inHistoryPage";
-import inSettingsPage from "./utils/inSettingsPage";
-import inTermsPage from "./utils/inTermsPage";
-import logger from "./utils/logger";
-import { saveSession } from "./utils/session";
+import "dotenv/config";
+import assert from "node:assert/strict";
+import type { Page } from "playwright";
+import { chromium } from "playwright";
+import { setupNetflix } from "./player/netflix.ts";
+import inHistoryPage from "./utils/inHistoryPage.ts";
+import inSettingsPage from "./utils/inSettingsPage.ts";
+import inTermsPage from "./utils/inTermsPage.ts";
+import logger from "./utils/logger.ts";
 
-require("dotenv").config();
-
-const {
-  SELENIUM_REMOTE_URL,
-  VIDEOMARK_EXTENSION_PATH,
-  NETFLIX_USER,
-  NETFLIX_PASSWORD,
-} = process.env;
+const { VIDEOMARK_EXTENSION_PATH, NETFLIX_USER, NETFLIX_PASSWORD } =
+  process.env;
 
 const enabledNetflix = Boolean(NETFLIX_USER);
 
-const waitForContentRendering = async (driver: WebDriver) => {
-  await driver.wait((driver: WebDriver) =>
-    driver.executeScript(`return document.readyState === "complete"`),
-  );
-  await driver.sleep(300);
+const waitForContentRendering = async (page: Page) => {
+  await page.waitForFunction(`document.readyState === "complete"`);
+  await page.waitForTimeout(300);
 };
 
-const switchToTermsPage = async (driver: WebDriver) => {
-  const windows = await driver.getAllWindowHandles();
+const switchToTermsPage = async (page: Page) => {
+  const terms = page
+    .context()
+    .pages()
+    .find((page) => inTermsPage(new URL(page.url())));
 
-  const urls = [];
-  for (const windowName of windows) {
-    await driver.switchTo().window(windowName);
-    urls.push({
-      windowName,
-      url: new URL(await driver.getCurrentUrl()),
-    });
-  }
-  const terms = urls.find(({ url }) => inTermsPage(url));
   if (terms == null) throw new Error("Terms page is not found.");
 
-  await driver.switchTo().window(terms.windowName);
-  await waitForContentRendering(driver);
+  await page.goto(terms.url());
+  await waitForContentRendering(page);
 };
 
-const closeOthers = async (driver: WebDriver) => {
-  const current = await driver.getWindowHandle();
-  const others = (await driver.getAllWindowHandles()).filter(
-    (other) => other !== current,
-  );
+const closeOthers = async (page: Page) => {
+  const others = page
+    .context()
+    .pages()
+    .filter((p) => p !== page);
 
   for (const other of others) {
-    await driver.switchTo().window(other);
-    await driver.close();
+    await other.close();
   }
-
-  await driver.switchTo().window(current);
 };
 
-const agreeToTerms = async (driver: WebDriver) => {
-  await switchToTermsPage(driver);
-  await closeOthers(driver);
-  await driver
-    .findElement(
-      By.xpath(
-        `\
+const agreeToTerms = async (page: Page) => {
+  await switchToTermsPage(page);
+  await closeOthers(page);
+  await page
+    .locator(
+      `\
   //button[@aria-label="プライバシーを尊重します"]
 | //button[@aria-label="We respect your privacy"]`,
-      ),
     )
     .click();
-  await driver
-    .findElement(
-      By.xpath(`\
+  await page
+    .locator(
+      `\
   //button[text()="使い始める"]
-| //button[text()="Get Started"]`),
+| //button[text()="Get Started"]`,
     )
     .click();
-  await waitForContentRendering(driver);
+  await waitForContentRendering(page);
 
   // NOTE: wait for welcome page to open.
-  await driver.sleep(10e3);
+  await page.waitForTimeout(10e3);
 
-  const url = new URL(await driver.getCurrentUrl());
+  const url = new URL(page.url());
   assert(inHistoryPage(url), "Welcome page has not been opened.");
 
   return url;
 };
 
-const setSessionId = async (driver: WebDriver, sessionId: string) => {
-  const url = await driver.getCurrentUrl();
-  await driver.get(
+const setSessionId = async (page: Page, sessionId: string) => {
+  await page.goto(
     new URL(
       `?${new URLSearchParams({
         bot: "true",
         session_id: sessionId,
       })}#/settings`,
-      url,
+      page.url(),
     ).toString(),
   );
   assert(
-    inSettingsPage(new URL(await driver.getCurrentUrl())),
+    inSettingsPage(new URL(page.url())),
     "Settings page has not been opened.",
   );
 
   assert.equal(
-    await driver
-      .findElement(
-        By.xpath(`\
+    await page
+      .locator(
+        `\
   //*[*/text()="セッション ID"]/following-sibling::*
-| //*[*/text()="Session ID"]/following-sibling::*`),
+| //*[*/text()="Session ID"]/following-sibling::*`,
       )
-      .getText(),
+      .textContent(),
     sessionId,
     "Failed to set Session ID.",
   );
 };
 
-const build = async (
-  browser: string,
-  options?: { androidDeviceSerial?: string },
-) => {
-  let capabilities: Capabilities | {} = {};
-  switch (browser) {
-    case "chrome": {
-      if (VIDEOMARK_EXTENSION_PATH == null) {
-        throw new Error("VIDEOMARK_EXTENSION_PATH required.");
-      }
-      capabilities = Capabilities.chrome().set("goog:chromeOptions", {
-        args: [
-          "--no-sandbox",
-          `--load-extension=${VIDEOMARK_EXTENSION_PATH}`,
-          "--window-size=1920,1080",
-          // NOTE: for Paravi.
-          "--autoplay-policy=no-user-gesture-required",
-        ],
-        excludeSwitches: [
-          // NOTE: for Paravi.
-          "--disable-background-networking",
-          // NOTE: for Paravi.
-          "--disable-default-apps",
-        ],
-      });
-      break;
-    }
-    case "android": {
-      const { androidDeviceSerial } = options || {};
-      capabilities = Capabilities.chrome().set("goog:chromeOptions", {
-        androidExecName: "chrome",
-        androidDeviceSocket: "chrome_devtools_remote",
-        androidPackage: "org.webdino.videomarkbrowser",
-        androidUseRunningApp: true,
-        ...(androidDeviceSerial == null ? {} : { androidDeviceSerial }),
-      });
-      break;
-    }
+const build = async (browser = "chrome") => {
+  if (VIDEOMARK_EXTENSION_PATH == null) {
+    throw new Error("VIDEOMARK_EXTENSION_PATH required.");
   }
 
-  const driver = new Builder().withCapabilities(capabilities).build();
-
-  if (SELENIUM_REMOTE_URL) {
-    await saveSession(driver);
-    logger.info("Save WebDriver session file.");
+  if (browser !== "chrome") {
+    throw new Error(`Unsupported browser: ${browser}`);
   }
 
-  return driver;
+  const ctx = await chromium.launchPersistentContext("", {
+    headless: false,
+    viewport: {
+      width: 1920,
+      height: 1080,
+    },
+    args: [
+      `--disable-extensions-except=${VIDEOMARK_EXTENSION_PATH}`,
+      `--load-extension=${VIDEOMARK_EXTENSION_PATH}`,
+    ],
+  });
+
+  const page = await ctx.newPage();
+  await page.waitForTimeout(10_000); // Wait for extension to load
+  const worker = ctx.serviceWorkers().at(-1);
+  // @ts-expect-error chrome is not defined typing
+  await worker.evaluate(() => chrome.action.onClicked.dispatch());
+
+  return page;
 };
 
-export const setup = async (
-  browser = "chrome",
-  options?: { sessionId?: string; androidDeviceSerial?: string },
-) => {
-  let driver;
+export const setup = async (browser = "chrome", sessionId?: string) => {
+  let page: Page;
+
   try {
-    driver = await build(browser, options);
-    switch (browser) {
-      case "chrome": {
-        logger.info("Wait for warm up...");
-        await driver.sleep(10e3);
+    logger.info("Wait for warm up...");
+    page = await build(browser);
 
-        logger.info("Agree to terms.");
-        await agreeToTerms(driver);
-        break;
-      }
-      case "android": {
-        await driver.get("chrome://videomark/");
-        break;
-      }
-    }
+    logger.info("Agree to terms.");
+    await agreeToTerms(page);
 
-    const { sessionId } = options || {};
     if (sessionId != null) {
-      await setSessionId(driver, sessionId);
+      await setSessionId(page, sessionId);
       logger.info(`Session ID: ${sessionId}`);
     }
 
     if (enabledNetflix) {
       logger.info("Login to Netflix.");
-      await setupNetflix(driver, {
+      await setupNetflix(page, {
         user: NETFLIX_USER ?? "",
         password: NETFLIX_PASSWORD ?? "",
       });
@@ -204,12 +152,13 @@ export const setup = async (
 
     logger.info("Setup complete.");
   } catch (error) {
-    if (driver != null) {
-      logger.error(`Current URL: ${await driver.getCurrentUrl()}`);
-      driver.quit();
+    if (page!) {
+      logger.error(`Current URL: ${page.url()}`);
+      await page.close();
     }
+
     throw error;
   }
 
-  return driver;
+  return page;
 };

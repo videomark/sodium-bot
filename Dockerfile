@@ -22,7 +22,7 @@ RUN npx @puppeteer/browsers install chrome@stable --path=/root/.cache \
   && ln -sf /root/.cache/chrome/*/chrome-*/chrome /opt/google/chrome/chrome
 
 # Download VideoMark extension.
-ARG VIDEOMARK_EXTENSION_URL=https://v3-2--sodium-extension.netlify.app/
+ARG VIDEOMARK_EXTENSION_URL=https://sodium-extension.netlify.app/
 ENV VIDEOMARK_EXTENSION_PATH=/videomark-extension
 RUN \
   curl \

@@ -7,6 +7,7 @@ import { play as playTVer } from "./player/tver.ts";
 import { play as playYouTube } from "./player/youtube.ts";
 import inTVerPage from "./utils/inTVerPage.ts";
 import inYouTubePage from "./utils/inYouTubePage.ts";
+import logger from "./utils/logger.ts";
 
 const players = [
   { supported: inYouTubePage, play: playYouTube },
@@ -131,7 +132,7 @@ export class PageController {
         };
 
         // NOTE: Interval time.
-        await page.waitForTimeout(200);
+        await new Promise((resolve) => setTimeout(resolve, 200));
       }
     };
 
@@ -142,6 +143,10 @@ export class PageController {
   }
 
   async screenshot(path = "screenshot.png") {
-    await this.page.screenshot({ path });
+    try {
+      await this.page.screenshot({ path });
+    } catch (error) {
+      logger.error("Failed to take screenshot:", error);
+    }
   }
 }

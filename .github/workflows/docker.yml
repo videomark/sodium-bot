@@ -6,7 +6,7 @@ on:
     types: [published]
 jobs:
   docker-push:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
       - run: docker login -u '${{ secrets.DOCKER_USERNAME }}' -p '${{ secrets.DOCKER_PASSWORD }}'
@@ -16,7 +16,6 @@ jobs:
       - name: Build
         run: docker compose build
       - name: Test
-        run: ": TODO: ボットとして判定されてしまうのでスキップ"
-        # run: docker compose run --rm sodium-bot start --session-id=sodium -t 180 https://www.youtube.com/watch?v=mY6sChi65oU
+        run: docker compose run --rm sodium-bot start --session-id=sodium -t 180 https://www.youtube.com/watch?v=mY6sChi65oU
       - name: Push
         run: docker compose push

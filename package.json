@@ -16,7 +16,7 @@
     "playwright": "^1.52.0"
   },
   "devDependencies": {
-    "@tsconfig/node22": "^22.0.2",
+    "@tsconfig/node24": "^24.0.0",
     "@types/debug": "^4.1.12",
     "@types/node": "^22.15.29",
     "typescript": "^5.8.3"

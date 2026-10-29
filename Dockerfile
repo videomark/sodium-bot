@@ -1,4 +1,4 @@
-FROM node:22-bookworm
+FROM node:26-bookworm@sha256:fa52d1669505e29b58c042875b1d65c229e0787a3610fd52869b22b68e480853
 
 # Setup Desktop.
 ARG TZ=Asia/Tokyo
